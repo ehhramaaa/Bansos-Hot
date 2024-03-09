@@ -1,0 +1,25 @@
+{
+  "name": "hot-wallet-puppeteer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bignumber.js": "^9.1.2",
+    "chalk": "^4.1.2",
+    "moment-timezone": "^0.5.45",
+    "near-api-js": "^3.0.2",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^22.4.1",
+    "twisters": "^1.1.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
