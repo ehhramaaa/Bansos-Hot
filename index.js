@@ -13,7 +13,7 @@ function sleep(ms) {
 }
 
 function prettyConsole(text) {
-    console.log(`[${moment().format('HH:mm:ss DD-MM-YYYY')}] ` + text)
+    console.log(`[${moment().format('HH:mm:ss')}] ` + text)
 }
 
 async function checkIp() {
@@ -49,18 +49,34 @@ async function ovpnReadConfig(folderPath) {
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
 const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
+let scheduledTask;
 
-async function claim(){
+const changeCronSchedule = (second, minute) => {
+    // Hapus jadwal cron yang sudah ada jika ada
+    if (scheduledTask) {
+        scheduledTask.destroy();
+    }
+
+    // Buat jadwal cron baru
+    scheduledTask = cron.schedule(`*/${second} */${minute} * * * *`, () => {
+        claim();
+    });
+};
+
+
+async function claim(second, minute){
+
+    console.log(chalk.cyan(`\n<==================================[${moment().format('HH:mm:ss DD-MM-YYYY')}]==================================>`))
     
     const ovpnConfig = await ovpnReadConfig(folderPath)
     
-    mainLoop : for(let x = 1; x <= 20; x++){
+    mainLoop : for(let x = 0; x <= 20; x++){
         exec(`${ovpnPath} --command disconnect_all`);
         
         await sleep(7000)
         
         const ip = await checkIp()
-        prettyConsole(chalk.blue(`Current IP : ${ip}`))
+        prettyConsole(chalk.magenta(`Current IP : ${ip}`))
         
         exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
     
@@ -83,6 +99,7 @@ async function claim(){
                     headless: false,
                     args: [
                         `--user-data-dir=${chromeUserPath}`,
+                        `--profile-directory=Default`,
                     ]
                 });
             }else{
@@ -158,10 +175,10 @@ async function claim(){
             elementFound = false
             let account
 
+            // Get Account Name
             do{
                 if(checkElement <= 5){
                     try {
-                        // Get Account Name
                         await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
                         account = await iframe.evaluate(() => {
                             const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
@@ -186,10 +203,10 @@ async function claim(){
             
             elementFound = false
 
+            // Click Storage
             do{
                 if(checkElement <= 5){
                     try {
-                        // Click Storage
                         await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
                         await iframe.evaluate(() => {
                             document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
@@ -210,16 +227,18 @@ async function claim(){
             }while(elementFound === false)
 
             elementFound = false
-            let balanceBefore
+            let storage = 0
+            const threshold = 93;
 
+            // Check Storage
             do{
                 if(checkElement <= 5){
                     try {
-                        // Check Balance
-                        await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                        balanceBefore = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                            return parseFloat(element.textContent)
+                        await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1) > div:nth-child(2)');
+                        storage = await iframe.evaluate(() => {
+                            const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1) > div:nth-child(2)');
+                            const widthStr = window.getComputedStyle(element).getPropertyValue("width");
+                            return parseFloat(widthStr.replace("%", ""))
                         });
                 
                         elementFound = true
@@ -236,145 +255,176 @@ async function claim(){
                 }
             }while(elementFound === false)
 
-            prettyConsole(chalk.green(`Balance :${balanceBefore}`))
-    
-            let claimed = false
-            
-            do {
-                // Claim $HOT
-                const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
-                
+            if(storage >= threshold){
                 elementFound = false
-                
+                let balanceBefore
+    
+                // Check Balance
                 do{
                     if(checkElement <= 5){
                         try {
-                            // Check Claim Disable Or Not
-                            const isDisabled = await iframe.evaluate((selector) => {
-                                const button = document.querySelector(selector);
-                                return button.disabled;
-                            }, claimSelector);
-
-                            if (isDisabled) {
-                                prettyConsole(chalk.red(`Profile ${x} Balance ${chalk.yellow('$HOT')} Not Enough For Claim, Switch To Next Account`))
-                                await browser.close()
-                                elementFound = 'error'
-                                continue mainLoop
-                            }
-
-                            await iframe.waitForSelector(claimSelector);
-                            await iframe.evaluate((selector) => {
-                                document.querySelector(selector).click();
-                            }, claimSelector);
-
+                            await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                            balanceBefore = await iframe.evaluate(() => {
+                                const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                                return parseFloat(element.textContent)
+                            });
+                    
                             elementFound = true
                             checkElement = 0
                         } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Claim Button'))
+                            prettyConsole(chalk.yellow('Still Fetch Balance'))
                             checkElement++
                         }
                     }else{
-                        prettyConsole(chalk.red(`Profile ${x} Fetch Claim Button Show So Take Long Time, Switch To Next Account`))
+                        prettyConsole(chalk.red(`Profile ${x} Fetch Balance So Take Long Time, Switch To Next Account`))
                         await browser.close()
                         elementFound = 'error'
                         continue mainLoop
                     }
                 }while(elementFound === false)
     
-                prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT')}`))
-    
-                let balanceAfter = 0
+                prettyConsole(chalk.green(`Balance :${balanceBefore}`))
+        
+                let claimed = false
                 
-                do{
+                // Claim $HOT
+                do {
+                    const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
+                    
                     elementFound = false
-
-                    if(checkElement <= 10){
-                        if(balanceAfter <= balanceBefore){
+                    
+                    do{
+                        if(checkElement <= 5){
                             try {
-                                // Check balance for makesure is claimed
-                                balanceAfter = await iframe.evaluate(() => {
-                                    const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                                    return parseFloat(element.textContent);
-                                });
+                                // Check Claim Disable Or Not
+                                const isDisabled = await iframe.evaluate((selector) => {
+                                    const button = document.querySelector(selector);
+                                    return button.disabled;
+                                }, claimSelector);
+    
+                                if (isDisabled) {
+                                    prettyConsole(chalk.red(`Profile ${x} Balance ${chalk.yellow('$HOT')} Not Enough For Claim, Switch To Next Account`))
+                                    await browser.close()
+                                    elementFound = 'error'
+                                    continue mainLoop
+                                }
+    
+                                await iframe.waitForSelector(claimSelector);
+                                await iframe.evaluate((selector) => {
+                                    document.querySelector(selector).click();
+                                }, claimSelector);
+    
+                                elementFound = true
+                                checkElement = 0
                             } catch (error) {
-                                prettyConsole(chalk.red(error))
+                                prettyConsole(chalk.yellow('Still Fetch Claim Button'))
+                                checkElement++
                             }
-
-                            await sleep(15000)
-
-                            if(checkElement === 5){
-                                prettyConsole(chalk.yellow('Still Claiming $HOT'))
-                            }
-                            
-                            
-                            checkElement++
                         }else{
-                            prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT')} Successfully!`))
-                            prettyConsole(chalk.green(`Balance ${chalk.yellow('$HOT')} ${balanceAfter}`))
-                            elementFound = true
-                            claimed = true
+                            prettyConsole(chalk.red(`Profile ${x} Fetch Claim Button Show So Take Long Time, Switch To Next Account`))
+                            await browser.close()
+                            elementFound = 'error'
+                            continue mainLoop
                         }
-                    }else{
-                        // Tweak if not claimed with clicking boost
-                        prettyConsole(chalk.red(`Profile ${x} Claiming ${chalk.yellow('$HOT')} So Take Long Time, Tweaking`))
-                        
-                        let tweak = false
-                        checkElement = 0
-
-                        do{
-                            if(checkElement <= 3){
+                    }while(elementFound === false)
+        
+                    prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT')}`))
+        
+                    let balanceAfter = 0
+                    
+                    do{
+                        elementFound = false
+    
+                        if(checkElement <= 10){
+                            if(balanceAfter <= balanceBefore){
                                 try {
-                                    // Click Gas
-                                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
-                                    await iframe.evaluate(() => {
-                                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                                    // Check balance for makesure is claimed
+                                    balanceAfter = await iframe.evaluate(() => {
+                                        const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                                        return parseFloat(element.textContent);
                                     });
-
-                                    tweak = true
-                                    checkElement = 0
                                 } catch (error) {
-                                    prettyConsole(chalk.yellow('Still Fetch Boost Button'))
-                                    checkElement++
+                                    prettyConsole(chalk.red(error))
                                 }
-                            }else{
-                                prettyConsole(chalk.red(`Profile ${x} Fetch Boost Button Show So Take Long Time, Switch To Next Account`))
-                                await browser.close()
-                                elementFound = 'error'
-                                continue mainLoop
-                            }
-                        }while(tweak === false)
-
-                        await sleep(3000)
-
-                        tweak = false
-
-                        do{
-                            if(checkElement <= 3){
-                                try {
-                                    // Click Back
-                                    await iframe.waitForSelector('.btn-icon.popup-close');
-                                    await iframe.evaluate(() => {
-                                        document.querySelector('.btn-icon.popup-close').click();
-                                    });
-
-                                    tweak = true
-                                    checkElement = 0
-                                } catch (error) {
-                                    prettyConsole(chalk.yellow('Still Fetch Back Button'))
-                                    checkElement++
+    
+                                await sleep(15000)
+    
+                                if(checkElement === 5){
+                                    prettyConsole(chalk.yellow('Still Claiming $HOT'))
                                 }
+                                
+                                
+                                checkElement++
                             }else{
-                                prettyConsole(chalk.red(`Profile ${x} Fetch Back Button Show So Take Long Time, Switch To Next Account`))
-                                await browser.close()
-                                elementFound = 'error'
-                                continue mainLoop
+                                prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT')} Successfully!`))
+                                prettyConsole(chalk.green(`Balance ${chalk.yellow('$HOT')} ${balanceAfter}`))
+                                elementFound = true
+                                claimed = true
                             }
-                        }while(tweak === false)
-
-                        prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT')}`))
-                    }
-                }while(elementFound === false)
-            } while (claimed === false)
+                        }else{
+                            // Tweak if not claimed with clicking boost
+                            prettyConsole(chalk.red(`Profile ${x} Claiming ${chalk.yellow('$HOT')} So Take Long Time, Tweaking`))
+                            
+                            let tweak = false
+                            checkElement = 0
+    
+                            do{
+                                if(checkElement <= 3){
+                                    try {
+                                        // Click Gas
+                                        await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
+                                        await iframe.evaluate(() => {
+                                            document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                                        });
+    
+                                        tweak = true
+                                        checkElement = 0
+                                    } catch (error) {
+                                        prettyConsole(chalk.yellow('Still Fetch Boost Button'))
+                                        checkElement++
+                                    }
+                                }else{
+                                    prettyConsole(chalk.red(`Profile ${x} Fetch Boost Button Show So Take Long Time, Switch To Next Account`))
+                                    await browser.close()
+                                    elementFound = 'error'
+                                    continue mainLoop
+                                }
+                            }while(tweak === false)
+    
+                            await sleep(3000)
+    
+                            tweak = false
+    
+                            do{
+                                if(checkElement <= 3){
+                                    try {
+                                        // Click Back
+                                        await iframe.waitForSelector('.btn-icon.popup-close');
+                                        await iframe.evaluate(() => {
+                                            document.querySelector('.btn-icon.popup-close').click();
+                                        });
+    
+                                        tweak = true
+                                        checkElement = 0
+                                    } catch (error) {
+                                        prettyConsole(chalk.yellow('Still Fetch Back Button'))
+                                        checkElement++
+                                    }
+                                }else{
+                                    prettyConsole(chalk.red(`Profile ${x} Fetch Back Button Show So Take Long Time, Switch To Next Account`))
+                                    await browser.close()
+                                    elementFound = 'error'
+                                    continue mainLoop
+                                }
+                            }while(tweak === false)
+    
+                            prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT')}`))
+                        }
+                    }while(elementFound === false)
+                } while (claimed === false)
+            }else{
+                prettyConsole(chalk.yellow(`Storage Still ${storage}%, You Can Claim $HOT If Storage >= ${threshold}% `))
+            }
     
             await browser.close()
 
@@ -384,16 +434,17 @@ async function claim(){
             await sleep(rest)
         }
     }
+
+    changeCronSchedule(second, minute);
 }
 
 (async () => {
-    prettyConsole(chalk.green('Bot For Claim $HOT Every 2 Hours Random(45-59) Minute'))
+    const second = Math.floor(Math.random() * (59 - 1 + 1)) + 1
+    const minute = Math.floor(Math.random() * (59 - 45 + 1)) + 45
 
-    // TODO Buat Agar Claimnya Sesuai Dengan Jamnya - 10% random
-    await claim()
-    cron.schedule(`${Math.floor(Math.random() * (59 - 45 + 1)) + 45} */2 * * *`, () => {
-        claim()
-    });
+    await claim(second, minute)
+
+    prettyConsole(`Rest For ${minute} Minute ${second} Second`)
 })()
 
 
