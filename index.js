@@ -244,11 +244,11 @@ async function claim(second, minute){
                         elementFound = true
                         checkElement = 0
                     } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Balance'))
+                        prettyConsole(chalk.yellow('Still Fetch Storage'))
                         checkElement++
                     }
                 }else{
-                    prettyConsole(chalk.red(`Profile ${x} Fetch Balance So Take Long Time, Switch To Next Account`))
+                    prettyConsole(chalk.red(`Profile ${x} Fetch Storage So Take Long Time, Switch To Next Account`))
                     await browser.close()
                     elementFound = 'error'
                     continue mainLoop
@@ -283,11 +283,11 @@ async function claim(second, minute){
                     }
                 }while(elementFound === false)
     
-                prettyConsole(chalk.green(`Balance :${balanceBefore}`))
+                prettyConsole(chalk.green(`Balance :${balanceBefore} $HOT🔥`))
         
                 let claimed = false
                 
-                // Claim $HOT
+                // Claim $HOT🔥
                 do {
                     const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                     
@@ -296,19 +296,6 @@ async function claim(second, minute){
                     do{
                         if(checkElement <= 5){
                             try {
-                                // Check Claim Disable Or Not
-                                const isDisabled = await iframe.evaluate((selector) => {
-                                    const button = document.querySelector(selector);
-                                    return button.disabled;
-                                }, claimSelector);
-    
-                                if (isDisabled) {
-                                    prettyConsole(chalk.red(`Profile ${x} Balance ${chalk.yellow('$HOT')} Not Enough For Claim, Switch To Next Account`))
-                                    await browser.close()
-                                    elementFound = 'error'
-                                    continue mainLoop
-                                }
-    
                                 await iframe.waitForSelector(claimSelector);
                                 await iframe.evaluate((selector) => {
                                     document.querySelector(selector).click();
@@ -328,7 +315,7 @@ async function claim(second, minute){
                         }
                     }while(elementFound === false)
         
-                    prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT')}`))
+                    prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT🔥')}`))
         
                     let balanceAfter = 0
                     
@@ -350,20 +337,20 @@ async function claim(second, minute){
                                 await sleep(15000)
     
                                 if(checkElement === 5){
-                                    prettyConsole(chalk.yellow('Still Claiming $HOT'))
+                                    prettyConsole(chalk.yellow('Still Claiming $HOT🔥'))
                                 }
                                 
                                 
                                 checkElement++
                             }else{
-                                prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT')} Successfully!`))
-                                prettyConsole(chalk.green(`Balance ${chalk.yellow('$HOT')} ${balanceAfter}`))
+                                prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT🔥')} Successfully!`))
+                                prettyConsole(chalk.green(`Balance :${balanceAfter} ${chalk.yellow('$HOT🔥')}`))
                                 elementFound = true
                                 claimed = true
                             }
                         }else{
                             // Tweak if not claimed with clicking boost
-                            prettyConsole(chalk.red(`Profile ${x} Claiming ${chalk.yellow('$HOT')} So Take Long Time, Tweaking`))
+                            prettyConsole(chalk.red(`Profile ${x} Claiming ${chalk.yellow('$HOT🔥')} So Take Long Time, Tweaking`))
                             
                             let tweak = false
                             checkElement = 0
@@ -418,12 +405,12 @@ async function claim(second, minute){
                                 }
                             }while(tweak === false)
     
-                            prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT')}`))
+                            prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT🔥')}`))
                         }
                     }while(elementFound === false)
                 } while (claimed === false)
             }else{
-                prettyConsole(chalk.yellow(`Storage Still ${storage}%, You Can Claim $HOT If Storage >= ${threshold}% `))
+                prettyConsole(chalk.yellow(`Storage Still ${storage}%, You Can Claim $HOT🔥 If Storage >= ${threshold}% `))
             }
     
             await browser.close()
