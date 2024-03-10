@@ -65,11 +65,11 @@ const changeCronSchedule = (minute) => {
         schedule = parseInt(currentMinute / 2)
     }
 
-    prettyConsole(chalk.green(`\nRest until ${schedule} minute o'clock`))
+    console.log(chalk.cyan(`\n<==================================[Rest until minute ${schedule} in o'clock]==================================>`))
 
     // Hapus jadwal cron yang sudah ada jika ada
     if (scheduledTask) {
-        scheduledTask.destroy();
+        scheduledTask.stop();
     }
 
     // Buat jadwal cron baru
@@ -389,7 +389,9 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 }
 
 
-async function claim(minute) {
+async function claim() {
+
+    const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
 
     console.log(chalk.cyan(`\n<==================================[${moment().format('HH:mm:ss DD-MM-YYYY')}]==================================>`))
 
@@ -881,7 +883,7 @@ async function claim(minute) {
             await browser.close()
 
             exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-            const rest = (Math.random() * (45 - 30) + 30) * 1000
+            const rest = (Math.random() * (30 - 15) + 15) * 1000
             prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
             await sleep(rest)
         }
@@ -891,7 +893,5 @@ async function claim(minute) {
 }
 
 (async () => {
-    const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
-
-    await claim(minute)
+    await claim()
 })()
