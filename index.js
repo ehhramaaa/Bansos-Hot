@@ -52,13 +52,15 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
 let scheduledTask;
 
 const changeCronSchedule = (second, minute) => {
+    const currentSecond = moment().format('ss')
+    const currentMinute= moment().format('mm')
     // Hapus jadwal cron yang sudah ada jika ada
     if (scheduledTask) {
         scheduledTask.destroy();
     }
 
     // Buat jadwal cron baru
-    scheduledTask = cron.schedule(`*/${second} */${minute} * * * *`, () => {
+    scheduledTask = cron.schedule(`${currentSecond}/${second} ${currentMinute}/${minute} * * * *`, () => {
         claim();
     });
 };
@@ -93,9 +95,10 @@ async function claim(second, minute){
         };
         
         if (isVpn) {
+            prettyConsole(chalk.green(`Vpn Connected, IP : ${vpn}`))
+
             while (!isConnected) {
                 try {
-                    prettyConsole(chalk.yellow(`Vpn Connected, IP : ${vpn}`))
                     if(x === 0){
                         browser = await puppeteer.launch({
                             args: [
@@ -125,6 +128,8 @@ async function claim(second, minute){
                     prettyConsole(chalk.red(error.message))
                 }
             }
+
+            prettyConsole(chalk.green(`Profile :${x}`))
             
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
 
@@ -242,6 +247,8 @@ async function claim(second, minute){
             let storage = 0
             const threshold = 93;
 
+            await sleep(1000)
+
             // Check Storage
             do{
                 if(checkElement <= 5){
@@ -266,6 +273,12 @@ async function claim(second, minute){
                     continue mainLoop
                 }
             }while(elementFound === false)
+            
+            if(storage >= 100){
+                prettyConsole(chalk.green(`Storage :Full`))
+            }else{
+                prettyConsole(chalk.green(`Storage :${storage}%`))
+            }
 
             if(storage >= threshold){
                 elementFound = false
@@ -323,7 +336,7 @@ async function claim(second, minute){
                 } while (elementFound === false)
 
                 prettyConsole(chalk.cyan(`Wait Gas Free Counting...`))
-                
+
                 await sleep(10000)
 
                 elementFound = false
