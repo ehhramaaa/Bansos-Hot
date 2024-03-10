@@ -1,11 +1,12 @@
-# Auto Claim Bansos Hot v1.0
+# Auto Claim Bansos Hot v1.2
     Note: You Can Customize The Code For Your Usage
 
 # Feature : 
- - Schedule Check Storage Every Random Minute And Random Second
+ - Schedule Check Storage Every Random Minute On Clock
  - Check Current Ip And Connected Ip (If Use Vpn)
- - Auto Upgrade Speed (In v1.1)
- - Auto Upgrade Storage (In v 1.2)
+ - Check Gas Free For Claim
+ - Auto Upgrade Speed
+ - Auto Upgrade Storage
 
 # Requirement : 
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
