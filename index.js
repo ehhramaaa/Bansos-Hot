@@ -154,7 +154,6 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
                 }
             } else {
                 prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                await browser.close()
                 return
             }
         } while (elementFound === false)
@@ -320,7 +319,6 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
                 }
             } else {
                 prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                await browser.close()
                 return
             }
         } while (elementFound === false)
