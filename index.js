@@ -234,6 +234,8 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
             } while (elementFound === false)
 
             prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
+
+            balance = balance - price
         } else {
             prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
         }
