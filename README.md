@@ -10,20 +10,25 @@
 # Requirement : 
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
  
- -  Check where your chrome user data path, and put at var chromeUserPath e.g Default Path :
-    - (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data)
+ - Check where your chrome user data path, and put at var chromeUserPath e.g Default Path :
+     
+        (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data)
 
  - Check where your OpenVpn config path and put at var folderPath, e.g Default Path :
-    - (C:\Program Files\OpenVPN\config)
+ 
+        (C:\Program Files\OpenVPN\config)
 
  - Check where your OpenVpn Executable path and put at var ovpnPath, e.g Default Path :
-    - (C:\Program Files\OpenVPN\bin\openvpn-gui.exe)
+
+        (C:\Program Files\OpenVPN\bin\openvpn-gui.exe)
 
  - Add wallet.txt (For Login) 
 
 # How To Use:
  - Create all Chrome profiles depending on how many account you want to use
-    - You can create first profile in chrome without account and check your Chrome User Data Path, e.g Default (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data) 
+    - You can create first profile in chrome without account and check your Chrome User Data Path, e.g Default: 
+
+            (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data) 
     - You can duplicate the profile chrome e.g profile x in Chrome User Data Path depending on how many accounts you want to use
     
 - Login Your Telegram Account In All Profile You Want Use
@@ -36,6 +41,5 @@
 - Key in wallet.txt for login 1 line 1 key and line in wallet.txt is implement profile chrome, so if you login with key in line 1 your key is store in profile chrome 1
 
 #
-    Credit
     Instagram   : ehhramaa_
     Twitter     : ehhramaa_
