@@ -81,7 +81,8 @@ async function claim(second, minute){
         exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
     
         let isVpn = false;
-        let vpn
+        let isConnected = false
+        let vpn, browser, page
     
         while (!isVpn) {
             vpn = await checkIp();
@@ -92,37 +93,48 @@ async function claim(second, minute){
         };
         
         if (isVpn) {
-            let browser
-            prettyConsole(chalk.yellow(`Vpn Connected, IP : ${vpn}`))
-            if(x === 0){
-                browser = await puppeteer.launch({
-                    headless: false,
-                    args: [
-                        `--user-data-dir=${chromeUserPath}`,
-                        `--profile-directory=Default`,
-                    ]
-                });
-            }else{
-                browser = await puppeteer.launch({
-                    headless: false,
-                    args: [
-                        `--user-data-dir=${chromeUserPath}`,
-                        `--profile-directory=Profile ${x}`,
-                    ]
-                });
+            while (!isConnected) {
+                try {
+                    prettyConsole(chalk.yellow(`Vpn Connected, IP : ${vpn}`))
+                    if(x === 0){
+                        browser = await puppeteer.launch({
+                            args: [
+                                `--user-data-dir=${chromeUserPath}`,
+                                `--profile-directory=Default`,
+                            ]
+                        });
+                    }else{
+                        browser = await puppeteer.launch({
+                            args: [
+                                `--user-data-dir=${chromeUserPath}`,
+                                `--profile-directory=Profile ${x}`,
+                            ]
+                        });
+                    }
+            
+                    page = await browser.newPage();
+
+                    page.on('disconnected', () => {
+                        console.log('Page disconnected. Attempting to reconnect...');
+                        isConnected = false;
+                    });
+            
+                    isConnected = true;
+                    
+                } catch (error) {
+                    prettyConsole(chalk.red(error.message))
+                }
             }
-    
-            const page = await browser.newPage();
-    
+            
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
 
             let elementFound = false
             let checkElement = 0
     
+            // Click claim now
             do{
                 if(checkElement <= 5){
                     try {
-                        // Click claim now
                         await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
                         await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
                         elementFound = true
@@ -141,10 +153,10 @@ async function claim(second, minute){
 
             elementFound = false
 
+            // Click button launch
             do{
                 if(checkElement <= 5){
                     try {
-                        // Click button launch
                         await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
                         await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
                         elementFound = true
@@ -284,6 +296,89 @@ async function claim(second, minute){
                 }while(elementFound === false)
     
                 prettyConsole(chalk.green(`Balance :${balanceBefore} $HOT🔥`))
+
+                elementFound = false
+
+                // Click Gas
+                do {
+                    if (checkElement <= 3) {
+                        try {
+                            await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
+                            await iframe.evaluate(() => {
+                                document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                            });
+        
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Gas Button'))
+                            checkElement++
+                        }
+                    } else {
+                        prettyConsole(chalk.red(`Profile ${profile} Fetch Gas Button Show So Take Long Time, Switch To Next Account`))
+                        await browser.close()
+                        elementFound = 'error'
+                        continue mainLoop
+                    }
+                } while (elementFound === false)
+
+                prettyConsole(chalk.cyan(`Wait Gas Free Counting...`))
+                
+                await sleep(10000)
+
+                elementFound = false
+                let gasFree
+    
+                // Check Gas Free Amount
+                do{
+                    if(checkElement <= 3){
+                        try {
+                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div:nth-child(1) > h3');
+                            gasFree = await iframe.evaluate(() => {
+                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div:nth-child(1) > h3');
+                                return parseFloat(element.textContent)
+                            });
+                    
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Gas Amount'))
+                            checkElement++
+                        }
+                    }else{
+                        prettyConsole(chalk.red(`Profile ${x} Fetch Gas Amount So Take Long Time, Switch To Next Account`))
+                        await browser.close()
+                        elementFound = 'error'
+                        continue mainLoop
+                    }
+                }while(elementFound === false)
+
+                prettyConsole(chalk.green(`Gas Free :${gasFree}`))
+
+                elementFound = false
+
+                // Click Back
+                do {
+                    if (checkElement <= 3) {
+                        try {
+                            await page.waitForSelector('.popup-close');
+                            await page.click('.popup-close');
+    
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Back Button'))
+                            checkElement++
+                        }
+                    } else {
+                        prettyConsole(chalk.red(`Profile ${profile} Fetch Back Button Show So Take Long Time, Switch To Next Account`))
+                        await browser.close()
+                        elementFound = 'error'
+                        continue mainLoop
+                    }
+                } while (elementFound === false)
+
+                await sleep(3000)
         
                 let claimed = false
                 
@@ -331,7 +426,7 @@ async function claim(second, minute){
                                         return parseFloat(element.textContent);
                                     });
                                 } catch (error) {
-                                    prettyConsole(chalk.red(error))
+                                    prettyConsole(chalk.red(error.message))
                                 }
     
                                 await sleep(15000)
