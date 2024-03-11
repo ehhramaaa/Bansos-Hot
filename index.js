@@ -110,96 +110,73 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
     if (balance >= price) {
-        elementFound = false
-
-        // Click For Upgrade
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
-                    await iframe.evaluate(() => {
-                        document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
-                    })
-
-                    elementFound = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Boost Button'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Boost Button Show So Take Long Time, Switch Upgrade Storage`))
-                return
-            }
-        } while (elementFound === false)
-
-        elementFound = false
-
-        await sleep(3000)
-
-        // Confirm Upgrade
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                    await iframe.evaluate(() => {
-                        document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                    })
-
-                    elementFound = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                return
-            }
-        } while (elementFound === false)
-
-        elementFound = false
-
-        let upgraded = false
-        // Make Sure Upgraded
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                    await iframe.evaluate(() => {
-                        const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                        return element.textContent
-                    })
-
-                    elementFound = true
-                    upgraded = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
-                return
-            }
-        } while (elementFound === false)
-
-        if (upgraded) {
+        if (!level.includes('5')) {
             elementFound = false
 
-            // Click Got it
+            // Click For Upgrade
+            do {
+                if (checkElement <= 5) {
+                    try {
+                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
+                        await iframe.evaluate(() => {
+                            document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
+                        })
+
+                        elementFound = true
+                        checkElement = 0
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Boost Button'))
+                        checkElement++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Boost Button Show So Take Long Time, Switch Upgrade Storage`))
+                    return
+                }
+            } while (elementFound === false)
+
+            elementFound = false
+
+            await sleep(3000)
+
+            // Confirm Upgrade
             do {
                 if (checkElement <= 5) {
                     try {
                         await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                        account = await iframe.evaluate(() => {
+                        await iframe.evaluate(() => {
                             document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                         })
 
                         elementFound = true
                         checkElement = 0
                     } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully Button'))
+                        prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
+                        checkElement++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
+                    return
+                }
+            } while (elementFound === false)
+
+            elementFound = false
+
+            let upgraded = false
+            // Make Sure Upgraded
+            do {
+                if (checkElement <= 5) {
+                    try {
+                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                        await iframe.evaluate(() => {
+                            const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                            return element.textContent
+                        })
+
+                        elementFound = true
+                        upgraded = true
+                        checkElement = 0
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
                         checkElement++
                     }
                 } else {
@@ -208,35 +185,62 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
                 }
             } while (elementFound === false)
 
-            await sleep(3000)
+            if (upgraded) {
+                elementFound = false
 
-            // Check Level Speed
-            do {
-                if (checkElement <= 5) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                        level = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                            return element.textContent
-                        })
+                // Click Got it
+                do {
+                    if (checkElement <= 5) {
+                        try {
+                            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                            account = await iframe.evaluate(() => {
+                                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                            })
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Level Speed'))
-                        checkElement++
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully Button'))
+                            checkElement++
+                        }
+                    } else {
+                        prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
+                        return
                     }
-                } else {
-                    prettyConsole(chalk.red(`Level Speed Show So Take Long Time, Switch Upgrade Storage`))
-                    return
-                }
-            } while (elementFound === false)
+                } while (elementFound === false)
 
-            prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
+                await sleep(3000)
 
-            balance = balance - price
+                // Check Level Speed
+                do {
+                    if (checkElement <= 5) {
+                        try {
+                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                            level = await iframe.evaluate(() => {
+                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                                return element.textContent
+                            })
+
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Level Speed'))
+                            checkElement++
+                        }
+                    } else {
+                        prettyConsole(chalk.red(`Level Speed Show So Take Long Time, Switch Upgrade Storage`))
+                        return
+                    }
+                } while (elementFound === false)
+
+                prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
+
+                balance = balance - price
+            } else {
+                prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
+            }
         } else {
-            prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
+            prettyConsole(chalk.yellow(`Your Level Is 5, Only Claiming Not Upgrading`))
         }
     } else {
         prettyConsole(chalk.yellow(`Balance $HOT🔥 Not Enough For Upgrade Speed`))
@@ -275,112 +279,115 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
 
     if (balance >= price) {
-        elementFound = false
-
-        // Click For Upgrade
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
-                    account = await iframe.evaluate(() => {
-                        document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
-                    })
-
-                    elementFound = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Upgrade Button'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Upgrade Button Show So Take Long Time, Switch To Next Profile`))
-                return
-            }
-        } while (elementFound === false)
-
-        elementFound = false
-
-        await sleep(3000)
-
-        // Confirm Upgrade
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                    account = await iframe.evaluate(() => {
-                        document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                    })
-
-                    elementFound = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                return
-            }
-        } while (elementFound === false)
-
-        elementFound = false
-
-        let upgraded = false
-        // Make Sure Upgraded
-        do {
-            if (checkElement <= 5) {
-                try {
-                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                    await iframe.evaluate(() => {
-                        const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                        return element.textContent
-                    })
-
-                    elementFound = true
-                    upgraded = true
-                    checkElement = 0
-                } catch (error) {
-                    prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
-                    checkElement++
-                }
-            } else {
-                prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
-                return
-            }
-        } while (elementFound === false)
-
-        await sleep(3000)
-
-        if (upgraded) {
+        if (!level.includes('5')) {
             elementFound = false
 
-            // Check Level Storage
+            // Click For Upgrade
             do {
                 if (checkElement <= 5) {
                     try {
-                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                        level = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                            return element.textContent
+                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
+                        account = await iframe.evaluate(() => {
+                            document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
                         })
 
                         elementFound = true
                         checkElement = 0
                     } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Level Storage'))
+                        prettyConsole(chalk.yellow('Still Fetch Upgrade Button'))
                         checkElement++
                     }
                 } else {
-                    prettyConsole(chalk.red(`Level Storage Show So Take Long Time, Switch To Next Profile`))
+                    prettyConsole(chalk.red(`Upgrade Button Show So Take Long Time, Switch To Next Profile`))
                     return
                 }
             } while (elementFound === false)
 
-            prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
-        } else {
-            prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
-        }
+            elementFound = false
 
+            await sleep(3000)
+
+            // Confirm Upgrade
+            do {
+                if (checkElement <= 5) {
+                    try {
+                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                        account = await iframe.evaluate(() => {
+                            document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                        })
+
+                        elementFound = true
+                        checkElement = 0
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
+                        checkElement++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
+                    return
+                }
+            } while (elementFound === false)
+
+            elementFound = false
+
+            let upgraded = false
+            // Make Sure Upgraded
+            do {
+                if (checkElement <= 5) {
+                    try {
+                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                        await iframe.evaluate(() => {
+                            const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                            return element.textContent
+                        })
+
+                        elementFound = true
+                        upgraded = true
+                        checkElement = 0
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
+                        checkElement++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
+                    return
+                }
+            } while (elementFound === false)
+
+            await sleep(3000)
+
+            if (upgraded) {
+                elementFound = false
+
+                // Check Level Storage
+                do {
+                    if (checkElement <= 5) {
+                        try {
+                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                            level = await iframe.evaluate(() => {
+                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                                return element.textContent
+                            })
+
+                            elementFound = true
+                            checkElement = 0
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Level Storage'))
+                            checkElement++
+                        }
+                    } else {
+                        prettyConsole(chalk.red(`Level Storage Show So Take Long Time, Switch To Next Profile`))
+                        return
+                    }
+                } while (elementFound === false)
+
+                prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
+            } else {
+                prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
+            }
+        } else {
+            prettyConsole(chalk.yellow(`Your Level Is 5, Only Claiming Not Upgrading`))
+        }
     } else {
         prettyConsole(chalk.yellow(`Balance $HOT🔥 Not Enough For Upgrade Storage`))
     }
@@ -426,8 +433,8 @@ async function main() {
         }
 
         if (isVpn) {
-            do{
-                if(tryConnectBrowser <= 5){
+            do {
+                if (tryConnectBrowser <= 5) {
                     try {
                         if (x === 0) {
                             browser = await puppeteer.launch({
@@ -446,10 +453,10 @@ async function main() {
                                 ]
                             });
                         }
-    
+
                         const browserConnected = await browser.isConnected()
-        
-                        if(browserConnected){
+
+                        if (browserConnected) {
                             isConnected = true;
                         }
 
@@ -458,14 +465,14 @@ async function main() {
                         prettyConsole(chalk.red(error.message))
                         tryConnectBrowser++
                     }
-                }else{
+                } else {
                     prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
                     continue mainLoop
                 }
-            }while(!isConnected)
-            
+            } while (!isConnected)
+
             await sleep(3000)
-            
+
             prettyConsole(chalk.green(`Profile :${x}`))
 
             const page = await browser.newPage();
