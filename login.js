@@ -125,8 +125,8 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
         }
 
         if (isVpn) {
-            do{
-                if(tryConnectBrowser <= 5){
+            do {
+                if (tryConnectBrowser <= 5) {
                     try {
                         if (x === 0) {
                             browser = await puppeteer.launch({
@@ -145,10 +145,10 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                                 ]
                             });
                         }
-    
+
                         const browserConnected = await browser.isConnected()
-        
-                        if(browserConnected){
+
+                        if (browserConnected) {
                             isConnected = true;
                         }
 
@@ -157,14 +157,14 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                         prettyConsole(chalk.red(error.message))
                         tryConnectBrowser++
                     }
-                }else{
+                } else {
                     prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
                     continue loginloop
                 }
-            }while(!isConnected)
-            
+            } while (!isConnected)
+
             await sleep(3000)
-            
+
             prettyConsole(chalk.green(`Profile :${x}`))
 
 
@@ -182,11 +182,29 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
 
             await sleep(3000)
 
+            let popup = false
+            let tryPopup = 0
+            let iframeElementHandle
             // Handle iframe
-            const iframeSelector = '.payment-verification';
-            await page.waitForSelector(iframeSelector)
-            const iframeElementHandle = await page.$(iframeSelector);
+            do {
+                if (tryPopup <= 5) {
+                    try {
+                        const iframeSelector = '.payment-verification';
+                        await page.waitForSelector(iframeSelector)
+                        iframeElementHandle = await page.$(iframeSelector);
 
+                        popup = true
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Pop Up'))
+                        tryPopup++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Profile ${x} Pop Up Show So Take Long Time, Switch To Next Account`))
+                    await browser.close()
+                    continue loginloop
+                }
+            } while (popup === false)
+            
             await sleep(3000)
 
             const iframe = await iframeElementHandle.contentFrame();
@@ -224,7 +242,7 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
 
             await page.keyboard.type(wallet[x]);
 
-            await sleep(1000)
+            await sleep(3000)
 
             // Confirm Wallet
             await iframe.waitForSelector('#root > div > div:nth-child(4) > button');
