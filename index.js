@@ -109,6 +109,8 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
+    elementFound = false
+
     // Check Level Speed
     do {
         if (checkElement <= 3) {
@@ -299,6 +301,8 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
     } while (elementFound === false)
 
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
+
+    elementFound = false
 
     // Check Level Storage
     do {
