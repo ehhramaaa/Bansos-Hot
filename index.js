@@ -10,8 +10,7 @@ const cron = require('node-cron');
 
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = path.resolve(__dirname, 'Chrome', 'Data', 'profile');
-const chromeExe = path.resolve(__dirname, 'Chrome', 'GoogleChromePortable.exe');
+const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
 let scheduledTask;
 
 function sleep(ms) {
@@ -432,7 +431,6 @@ async function main() {
                     try {
                         if (x === 0) {
                             browser = await puppeteer.launch({
-                                executablePath: chromeExe,
                                 headless: true,
                                 args: [
                                     `--user-data-dir=${chromeUserPath}`,
@@ -441,7 +439,6 @@ async function main() {
                             });
                         } else {
                             browser = await puppeteer.launch({
-                                executablePath: chromeExe,
                                 headless: true,
                                 args: [
                                     `--user-data-dir=${chromeUserPath}`,

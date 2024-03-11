@@ -10,16 +10,16 @@
  - Auto Upgrade Storage
 
 # Requirement : 
- - Chrome Portable, You Can Download At:
-
-        https://drive.google.com/file/d/1l4TN5w6H_ZQRm9oOtl4VDGY2JYJlOT-X/view?usp=sharing
-
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
+ - Check where your chrome user data path, and put at var chromeUserPath e.g Default Path :
+
+       (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data)
+
+- If Using You Using OpenVPN
+
+- Check where your OpenVpn config path and put at var folderPath, e.g Default Path :
  
-        If Using You Using OpenVPN
-    - Check where your OpenVpn config path and put at var folderPath, e.g Default Path :
- 
-            (C:\Program Files\OpenVPN\config)
+       (C:\Program Files\OpenVPN\config)
 
      - Check where your OpenVpn Executable path and put at var ovpnPath, e.g Default Path :
 
@@ -33,13 +33,14 @@
 
 # How To Use:
  - Create all Chrome profiles depending on how many account you want to use
-    - You must extract Chrome.rar in folder hot and create profile in
+    - You can create first profile in chrome without account and check your Chrome User Data Path, e.g Default: 
 
-            (../Chrome/Data/Profile/) 
+            (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data) 
             
-    - You can duplicate the Profile 1 and change the name into Profile x depending on how many accounts you want to use
+    - You can duplicate the Profile x (raw) and change the name into Profile x depending on how many accounts you want to use
 
-            Important: Your Profile Must Be Named As: Profile x
+            Important: Your Profile Must Be Named As: Profile x, e.g Profile 1, 
+            Profile 2
     
 - Login Your Telegram Account In All Profile You Want Use
 - After all telegram already login you can use login.js for import account
