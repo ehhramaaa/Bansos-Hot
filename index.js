@@ -415,10 +415,8 @@ async function main() {
 
         while (!isVpn) {
             vpn = await checkIp();
-            prettyConsole(chalk.magenta(`Current IP with VPN: ${vpn}`));
-
             // Add a condition to check if the VPN connection is established
-            if (vpn !== ipBeforeVpn) {
+            if (vpn !== ip) {
                 isVpn = true;
                 isConnected = true;
                 prettyConsole(chalk.magenta(`VPN connected successfully!, IP : ${vpn}`));
