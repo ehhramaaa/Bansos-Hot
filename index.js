@@ -10,8 +10,8 @@ const cron = require('node-cron');
 
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = './Chrome/Data/profile';
-const chromeExe = './Chrome/App/Chrome-bin/chrome.exe'
+const chromeUserPath = path.resolve(__dirname, 'Chrome', 'Data', 'profile');
+const chromeExe = path.resolve(__dirname, 'Chrome', 'App', 'Chrome-bin', 'chrome.exe');
 let scheduledTask;
 
 function sleep(ms) {
@@ -66,7 +66,7 @@ const changeCronSchedule = (minute) => {
         schedule = parseInt(currentMinute / 2)
     }
 
-    console.log(chalk.cyan(`\n<==================================[Rest until minute ${schedule} in o'clock]==================================>`))
+    console.log(chalk.cyan(`\n<=============================[Rest until minute ${schedule} in o'clock]=============================>`))
 
     // Hapus jadwal cron yang sudah ada jika ada
     if (scheduledTask) {
@@ -419,8 +419,7 @@ async function main() {
             if (vpn !== ip) {
                 isVpn = true;
                 isConnected = true;
-                prettyConsole(chalk.magenta(`VPN connected successfully!, IP : ${vpn}`));
-                // Add any other code you want to execute after VPN is connected
+                prettyConsole(chalk.green(`VPN connected successfully!, IP : ${vpn}`));
             }
 
             // You may want to add a delay here to avoid continuous checking and reduce resource usage
@@ -428,42 +427,66 @@ async function main() {
         }
 
         if (isVpn) {
-            while (!isConnected) {
-                try {
-                    if (x === 0) {
-                        browser = await puppeteer.launch({
-                            executablePath: chromeExe,
-                            headless: true,
-                            args: [
-                                `--user-data-dir=${chromeUserPath}`,
-                                `--profile-directory=Default`,
-                            ]
-                        });
-                    } else {
-                        browser = await puppeteer.launch({
-                            executablePath: chromeExe,
-                            headless: true,
-                            args: [
-                                `--user-data-dir=${chromeUserPath}`,
-                                `--profile-directory=Profile ${x}`,
-                            ]
-                        });
-                    }
+            // while (!isConnected) {
+            //     try {
+            //         // if (x === 0) {
+            //         //     browser = await puppeteer.launch({
+            //         //         executablePath: chromeExe,
+            //         //         headless: true,
+            //         //         args: [
+            //         //             `--user-data-dir=${chromeUserPath}`,
+            //         //             `--profile-directory=Default`,
+            //         //         ]
+            //         //     });
+            //         // } else {
+            //         //     browser = await puppeteer.launch({
+            //         //         executablePath: chromeExe,
+            //         //         headless: true,
+            //         //         args: [
+            //         //             `--user-data-dir=${chromeUserPath}`,
+            //         //             `--profile-directory=Profile ${x}`,
+            //         //         ]
+            //         //     });
+            //         // }
 
-                    page = await browser.newPage();
 
-                    page.on('disconnected', () => {
-                        console.log('Page disconnected. Attempting to reconnect...');
-                        isConnected = false;
-                    });
+            //         browser = await puppeteer.launch({
+            //             executablePath: chromeExe,
+            //             headless: false,
+            //             args: [
+            //                 `--user-data-dir=${chromeUserPath}`,
+            //                 `--profile-directory=Default`,
+            //             ]
+            //         });
 
-                    isConnected = true;
+            //         page = await browser.newPage();
+            //         console.log(page)
 
-                } catch (error) {
-                    prettyConsole(chalk.red(error.message))
-                }
-            }
+            //         page.on('disconnected', () => {
+            //             console.log('Page disconnected. Attempting to reconnect...');
+            //             isConnected = false;
+            //         });
 
+            //         isConnected = true;
+
+            //     } catch (error) {
+            //         prettyConsole(chalk.red(error.message))
+            //     }
+            // }
+
+            // console.log(isConnected)
+
+            browser = await puppeteer.launch({
+                executablePath: chromeExe,
+                headless: false,
+                args: [
+                    `--user-data-dir=${chromeUserPath}`,
+                    `--profile-directory=Default`,
+                ]
+            });
+
+            page = await browser.newPage();
+            
             prettyConsole(chalk.green(`Profile :${x}`))
 
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
