@@ -528,10 +528,29 @@ async function main() {
 
             await sleep(3000)
 
+            elementFound = false
+
             // Handle iframe
             const iframeSelector = '.payment-verification';
-            await page.waitForSelector(iframeSelector)
-            const iframeElementHandle = await page.$(iframeSelector);
+            let iframeElementHandle
+            do {
+                if (checkElement <= 5) {
+                    try {
+                        await page.waitForSelector(iframeSelector)
+                        iframeElementHandle = await page.$(iframeSelector);
+                        elementFound = true
+                        checkElement = 0
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Button Launch'))
+                        checkElement++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Button Launch Show So Take Long Time, Switch To Next Account`))
+                    await browser.close()
+                    elementFound = 'error'
+                    continue mainLoop
+                }
+            } while (elementFound === false)
 
             await sleep(3000)
 
