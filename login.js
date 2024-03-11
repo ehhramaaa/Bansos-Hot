@@ -6,7 +6,6 @@ const { exec } = require('node:child_process');
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
-const cron = require('node-cron');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -95,7 +94,7 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
         const ovpnConfig = await ovpnReadConfig(folderPath)
         const wallet = await readTxtFile('./wallet.txt')
         
-        loginloop:for(let x = 7; x < wallet.length; x++){
+        loginloop:for(let x = 0; x < wallet.length; x++){
             exec(`${ovpnPath} --command disconnect_all`);
             await sleep(7000)
             const ip = await checkIp()
@@ -165,24 +164,24 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                 do{
                     if(tryLogin <= 5){
                         try {
+                            // Click Login
+                            await iframe.waitForSelector('#root > div > button');
+                            await iframe.evaluate(() => {
+                                document.querySelector('#root > div > button').click();
+                            })
 
-                // Click Login
-                await iframe.waitForSelector('#root > div > button');
-                await iframe.evaluate(() => {
-                    document.querySelector('#root > div > button').click();
-                })
+                            login = true
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Fetch Account'))
+                            tryLogin++
+                        }
+                    }else{
+                        prettyConsole(chalk.red(`Profile ${x} Login Button Show So Take Long Time, Switch To Next Account`))
+                        await browser.close()
+                        continue loginloop
+                    }
+                }while(login === false)
 
-                login = true
-            } catch (error) {
-                prettyConsole(chalk.yellow('Still Fetch Account'))
-                tryLogin++
-            }
-        }else{
-            prettyConsole(chalk.red(`Profile ${x} Login Button Show So Take Long Time, Switch To Next Account`))
-            await browser.close()
-            continue loginloop
-        }
-    }while(login === false)
                 // Input Wallet
                 await iframe.waitForSelector('#root > div > div:nth-child(3) > label > textarea');
                 await iframe.evaluate(() => {
@@ -230,24 +229,24 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                 do{
                     if(fetch <= 5){
                         try {
-                // Get Account Name
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
-                account = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
-                    return element.textContent
-                })
+                            // Get Account Name
+                            await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
+                            account = await iframe.evaluate(() => {
+                                const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
+                                return element.textContent
+                            })
 
-                select = true
-            } catch (error) {
-                prettyConsole(chalk.yellow('Still Import Account'))
-                fetch++
-            }
-        }else{
-            prettyConsole(chalk.red(`Profile ${x} Importing Account So Take Long Time, Switch To Next Account`))
-            await browser.close()
-            continue loginloop
-        }
-    }while(select === false)
+                            select = true
+                        } catch (error) {
+                            prettyConsole(chalk.yellow('Still Import Account'))
+                            fetch++
+                        }
+                    }else{
+                        prettyConsole(chalk.red(`Profile ${x} Importing Account So Take Long Time, Switch To Next Account`))
+                        await browser.close()
+                        continue loginloop
+                    }
+                }while(select === false)
 
                 prettyConsole(chalk.green(`Account :${account}`))
         
@@ -261,29 +260,3 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
         }
     
     })();
-
-// Fitur Upgrade Level Storage And Fire For Next Update Code
-
-            // // Click Boost
-            // await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
-            // await iframe.evaluate(() => {
-            //     document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
-            // });
-    
-            // // Check Price Of Upgrade Storage
-            // await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
-            // const priceUpgradeStorage = await iframe.evaluate(() => {
-            //     const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
-            //     return parseFloat(element.textContent);
-            // });
-    
-            // // Check Price Of Upgrade Stone
-            // await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
-            // const priceUpgradeStone = await iframe.evaluate(() => {
-            //     const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
-            //     return parseFloat(element.textContent);
-            // });
-    
-            // if(balanceAfter > priceUpgradeStone){
-            //     // Upgrade Stone
-            // }
