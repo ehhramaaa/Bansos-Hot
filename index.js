@@ -411,6 +411,7 @@ async function main() {
 
         let isVpn = false;
         let isConnected = false;
+        let tryConnectBrowser = 0
         let vpn, browser, page;
 
         while (!isVpn) {
@@ -418,7 +419,6 @@ async function main() {
             // Add a condition to check if the VPN connection is established
             if (vpn !== ip) {
                 isVpn = true;
-                isConnected = true;
                 prettyConsole(chalk.green(`VPN connected successfully!, IP : ${vpn}`));
             }
 
@@ -427,71 +427,52 @@ async function main() {
         }
 
         if (isVpn) {
-            // while (!isConnected) {
-            //     try {
-            //         // if (x === 0) {
-            //         //     browser = await puppeteer.launch({
-            //         //         executablePath: chromeExe,
-            //         //         headless: true,
-            //         //         args: [
-            //         //             `--user-data-dir=${chromeUserPath}`,
-            //         //             `--profile-directory=Default`,
-            //         //         ]
-            //         //     });
-            //         // } else {
-            //         //     browser = await puppeteer.launch({
-            //         //         executablePath: chromeExe,
-            //         //         headless: true,
-            //         //         args: [
-            //         //             `--user-data-dir=${chromeUserPath}`,
-            //         //             `--profile-directory=Profile ${x}`,
-            //         //         ]
-            //         //     });
-            //         // }
-
-
-            //         browser = await puppeteer.launch({
-            //             executablePath: chromeExe,
-            //             headless: false,
-            //             args: [
-            //                 `--user-data-dir=${chromeUserPath}`,
-            //                 `--profile-directory=Default`,
-            //             ]
-            //         });
-
-            //         page = await browser.newPage();
-            //         console.log(page)
-
-            //         page.on('disconnected', () => {
-            //             console.log('Page disconnected. Attempting to reconnect...');
-            //             isConnected = false;
-            //         });
-
-            //         isConnected = true;
-
-            //     } catch (error) {
-            //         prettyConsole(chalk.red(error.message))
-            //     }
-            // }
-
-            // console.log(isConnected)
-
-            browser = await puppeteer.launch({
-                executablePath: chromeExe,
-                headless: false,
-                args: [
-                    `--user-data-dir=${chromeUserPath}`,
-                    `--profile-directory=Default`,
-                ]
-            });
-
-            page = await browser.newPage();
+            do{
+                if(tryConnectBrowser <= 5){
+                    try {
+                        if (x === 0) {
+                            browser = await puppeteer.launch({
+                                executablePath: chromeExe,
+                                headless: true,
+                                args: [
+                                    `--user-data-dir=${chromeUserPath}`,
+                                    `--profile-directory=Default`,
+                                ]
+                            });
+                        } else {
+                            browser = await puppeteer.launch({
+                                executablePath: chromeExe,
+                                headless: true,
+                                args: [
+                                    `--user-data-dir=${chromeUserPath}`,
+                                    `--profile-directory=Profile ${x}`,
+                                ]
+                            });
+                        }
+    
+                        const browserConnected = await browser.isConnected()
+        
+                        if(browserConnected){
+                            isConnected = true;
+                        }
+                    } catch (error) {
+                        prettyConsole(chalk.red(error.message))
+                    }
+                }else{
+                    prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
+                    continue mainLoop
+                }
+            }while(!isConnected)
+            
+            await sleep(3000)
             
             prettyConsole(chalk.green(`Profile :${x}`))
 
+            page = await browser.newPage();
+            await page.setDefaultNavigationTimeout(0);
+
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
 
-            await page.setDefaultNavigationTimeout(0);
 
             let elementFound = false
             let checkElement = 0
