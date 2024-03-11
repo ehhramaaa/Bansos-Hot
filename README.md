@@ -1,4 +1,5 @@
-# Auto Claim Bansos Hot v1.2
+# Auto Claim Bansos Hot
+
     Note: You Can Customize The Code For Your Usage
 
 # Feature : 
@@ -9,37 +10,41 @@
  - Auto Upgrade Storage
 
 # Requirement : 
+ - Chrome Portable, You Can Download At:
+
+        https://drive.google.com/file/d/1l4TN5w6H_ZQRm9oOtl4VDGY2JYJlOT-X/view?usp=sharing
+
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
  
- - Check where your chrome user data path, and put at var chromeUserPath e.g Default Path :
-     
-        (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data)
-
- - Check where your OpenVpn config path and put at var folderPath, e.g Default Path :
+        If Using You Using OpenVPN
+    - Check where your OpenVpn config path and put at var folderPath, e.g Default Path :
  
-        (C:\Program Files\OpenVPN\config)
+            (C:\Program Files\OpenVPN\config)
 
- - Check where your OpenVpn Executable path and put at var ovpnPath, e.g Default Path :
+     - Check where your OpenVpn Executable path and put at var ovpnPath, e.g Default Path :
 
-        (C:\Program Files\OpenVPN\bin\openvpn-gui.exe)
+            (C:\Program Files\OpenVPN\bin\openvpn-gui.exe)
 
  - Add wallet.txt (For Login) 
 
+        Important: For Key in wallet.txt 1 line 1 key and line in wallet.txt is 
+        implement profile chrome, so if you login with key in line 1 your key 
+        is store in profile chrome 1
+
 # How To Use:
  - Create all Chrome profiles depending on how many account you want to use
-    - You can create first profile in chrome without account and check your Chrome User Data Path, e.g Default: 
+    - You must extract Chrome.rar in folder hot and create profile in
 
-            (C:\Users\xxxx\AppData\Local\Google\Chrome\User Data) 
-    - You can duplicate the profile chrome e.g profile x in Chrome User Data Path depending on how many accounts you want to use
+            (../Chrome/Data/Profile/) 
+            
+    - You can duplicate the Profile 1 and change the name into Profile x depending on how many accounts you want to use
+
+            Important: Your Profile Must Be Named As: Profile x
     
 - Login Your Telegram Account In All Profile You Want Use
 - After all telegram already login you can use login.js for import account
 - After all account already imported, you can use index.js for claiming
 #
-
-    Important: 
-- Profile Folder Name Must Like : Profile 1 - x. e.g Profile 0, Profile 1
-- Key in wallet.txt for login 1 line 1 key and line in wallet.txt is implement profile chrome, so if you login with key in line 1 your key is store in profile chrome 1
 
 #
     Instagram   : ehhramaa_

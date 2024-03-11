@@ -8,6 +8,12 @@ const path = require('path');
 const fetch = require('node-fetch');
 const cron = require('node-cron');
 
+const folderPath = 'C:\\Program Files\\OpenVPN\\config';
+const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
+const chromeUserPath = './Chrome/Data/profile';
+const chromeExe = './Chrome/App/Chrome-bin/chrome.exe'
+let scheduledTask;
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -46,11 +52,6 @@ async function ovpnReadConfig(folderPath) {
     }
 }
 
-const folderPath = 'C:\\Program Files\\OpenVPN\\config';
-const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
-let scheduledTask;
-
 const changeCronSchedule = (minute) => {
     const currentMinute = moment().format('mm')
     let schedule
@@ -74,7 +75,7 @@ const changeCronSchedule = (minute) => {
 
     // Buat jadwal cron baru
     scheduledTask = cron.schedule(`${schedule} * * * *`, () => {
-        claim();
+        main();
     });
 };
 
@@ -387,7 +388,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 }
 
 
-async function claim() {
+async function main() {
 
     const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
 
@@ -424,6 +425,7 @@ async function claim() {
                 try {
                     if (x === 0) {
                         browser = await puppeteer.launch({
+                            executablePath:chromeExe,
                             headless: true,
                             args: [
                                 `--user-data-dir=${chromeUserPath}`,
@@ -432,6 +434,7 @@ async function claim() {
                         });
                     } else {
                         browser = await puppeteer.launch({
+                            executablePath:chromeExe,
                             headless: true,
                             args: [
                                 `--user-data-dir=${chromeUserPath}`,
@@ -457,6 +460,8 @@ async function claim() {
             prettyConsole(chalk.green(`Profile :${x}`))
 
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
+
+            await page.setDefaultNavigationTimeout(0);
 
             let elementFound = false
             let checkElement = 0
@@ -891,5 +896,5 @@ async function claim() {
 }
 
 (async () => {
-    await claim()
+    await main()
 })()
