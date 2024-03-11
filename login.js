@@ -110,7 +110,7 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
         let isVpn = false;
         let isConnected = false;
         let tryConnectBrowser = 0
-        let vpn, browser, page;
+        let vpn, browser;
 
         while (!isVpn) {
             vpn = await checkIp();
@@ -130,7 +130,7 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                     try {
                         if (x === 0) {
                             browser = await puppeteer.launch({
-                                headless: true,
+                                headless: false,
                                 args: [
                                     `--user-data-dir=${chromeUserPath}`,
                                     `--profile-directory=Default`,
@@ -138,7 +138,7 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
                             });
                         } else {
                             browser = await puppeteer.launch({
-                                headless: true,
+                                headless: false,
                                 args: [
                                     `--user-data-dir=${chromeUserPath}`,
                                     `--profile-directory=Profile ${x}`,

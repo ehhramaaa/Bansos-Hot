@@ -411,7 +411,7 @@ async function main() {
         let isVpn = false;
         let isConnected = false;
         let tryConnectBrowser = 0
-        let vpn, browser, page;
+        let vpn, browser;
 
         while (!isVpn) {
             vpn = await checkIp();
@@ -468,7 +468,7 @@ async function main() {
             
             prettyConsole(chalk.green(`Profile :${x}`))
 
-            page = await browser.newPage();
+            const page = await browser.newPage();
             await page.setDefaultNavigationTimeout(0);
 
             await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
