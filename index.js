@@ -62,7 +62,7 @@ const changeCronSchedule = (minute) => {
         schedule = Math.abs(minute - currentMinute)
     }
 
-    if(schedule === currentMinute){
+    if (schedule === currentMinute) {
         schedule = parseInt(currentMinute / 2)
     }
 
@@ -406,26 +406,35 @@ async function main() {
 
         exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
 
+        // Wait for VPN connection to be established
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
+
         let isVpn = false;
-        let isConnected = false
-        let vpn, browser, page
+        let isConnected = false;
+        let vpn, browser, page;
 
         while (!isVpn) {
             vpn = await checkIp();
-            if (ip !== vpn && vpn !== null) {
+            prettyConsole(chalk.magenta(`Current IP with VPN: ${vpn}`));
+
+            // Add a condition to check if the VPN connection is established
+            if (vpn !== ipBeforeVpn) {
                 isVpn = true;
+                isConnected = true;
+                prettyConsole(chalk.magenta(`VPN connected successfully!, IP : ${vpn}`));
+                // Add any other code you want to execute after VPN is connected
             }
-            await sleep(3000)
-        };
+
+            // You may want to add a delay here to avoid continuous checking and reduce resource usage
+            await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
+        }
 
         if (isVpn) {
-            prettyConsole(chalk.green(`Vpn Connected, IP : ${vpn}`))
-
             while (!isConnected) {
                 try {
                     if (x === 0) {
                         browser = await puppeteer.launch({
-                            executablePath:chromeExe,
+                            executablePath: chromeExe,
                             headless: true,
                             args: [
                                 `--user-data-dir=${chromeUserPath}`,
@@ -434,7 +443,7 @@ async function main() {
                         });
                     } else {
                         browser = await puppeteer.launch({
-                            executablePath:chromeExe,
+                            executablePath: chromeExe,
                             headless: true,
                             args: [
                                 `--user-data-dir=${chromeUserPath}`,
