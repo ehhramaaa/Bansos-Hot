@@ -8,6 +8,7 @@
  - Check Gas Free For Claim
  - Auto Upgrade Speed
  - Auto Upgrade Storage
+ - Only Claiming If Level Storage And Level Speed Already 5
 
 # Requirement : 
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
