@@ -45,16 +45,16 @@ async function readTxtFile(filePath) {
 async function ovpnReadConfig(folderPath) {
     try {
         const config = fs.readdirSync(folderPath)
-        .filter(file => path.extname(file) === '.ovpn')
-        .sort((a, b) => {
-            // Mengambil angka dari nama file (tanpa ekstensi)
-            const numA = parseInt(a.match(/\d+/), 10);
-            const numB = parseInt(b.match(/\d+/), 10);
-            
-            // Membandingkan angka untuk menyortir secara numerik
-            return numA - numB;
-        });
-        
+            .filter(file => path.extname(file) === '.ovpn')
+            .sort((a, b) => {
+                // Mengambil angka dari nama file (tanpa ekstensi)
+                const numA = parseInt(a.match(/\d+/), 10);
+                const numB = parseInt(b.match(/\d+/), 10);
+
+                // Membandingkan angka untuk menyortir secara numerik
+                return numA - numB;
+            });
+
         return config;
     } catch (error) {
         prettyConsole(chalk.red('Error :', error));
@@ -90,173 +90,207 @@ const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
 const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
 
 (async () => {
-        prettyConsole(chalk.green('Bot For Claim $HOT Every 2 Hours Random(45-59) Minute'))
-        const ovpnConfig = await ovpnReadConfig(folderPath)
-        const wallet = await readTxtFile('./wallet.txt')
-        
-        loginloop:for(let x = 0; x < wallet.length; x++){
-            exec(`${ovpnPath} --command disconnect_all`);
-            await sleep(7000)
-            const ip = await checkIp()
-            exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
-        
-            let isVpn = false;
-            let vpn
-        
-            while (!isVpn) {
-                vpn = await checkIp();
-                if (ip !== vpn && vpn !== null) {
-                    isVpn = true;
-                }
-                await sleep(3000)
-            };
-            
-            if (isVpn) {
-                prettyConsole(chalk.yellow(`Vpn Connected, IP : ${vpn}`))
-                let browser
-                if(x === 0){
-                    browser = await puppeteer.launch({
-                        headless: false,
-                        args: [
-                            `--user-data-dir=${chromeUserPath}`,
-                            `--user-agent=${userAgent[x]}`
-                        ]
-                    });
-                }else{
-                    browser = await puppeteer.launch({
-                        headless: false,
-                        args: [
-                            `--user-data-dir=${chromeUserPath}`,
-                            `--profile-directory=Profile ${x}`,
-                            `--user-agent=${userAgent[x]}`
-                        ]
-                    });
-                }
-    
-        
-                const page = await browser.newPage();
-        
-                await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
-        
-                // Click claim now
-                await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-                await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-        
-                // Click button launch
-                await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                
-                await sleep(3000)
-                
-                // Handle iframe
-                const iframeSelector = '.payment-verification';
-                await page.waitForSelector(iframeSelector)
-                const iframeElementHandle = await page.$(iframeSelector);
-        
-                await sleep(3000)
-        
-                const iframe = await iframeElementHandle.contentFrame();
-        
-                await sleep(3000)
+    prettyConsole(chalk.green('Auto Login bansos'))
+    const ovpnConfig = await ovpnReadConfig(folderPath)
+    const wallet = await readTxtFile('./wallet.txt')
 
-                let login = false
-                let tryLogin = 0
-                do{
-                    if(tryLogin <= 5){
-                        try {
-                            // Click Login
-                            await iframe.waitForSelector('#root > div > button');
-                            await iframe.evaluate(() => {
-                                document.querySelector('#root > div > button').click();
-                            })
+    loginloop: for (let x = 0; x < wallet.length; x++) {
+        exec(`${ovpnPath} --command disconnect_all`);
 
-                            login = true
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Account'))
-                            tryLogin++
-                        }
-                    }else{
-                        prettyConsole(chalk.red(`Profile ${x} Login Button Show So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        continue loginloop
-                    }
-                }while(login === false)
+        await sleep(7000)
 
-                // Input Wallet
-                await iframe.waitForSelector('#root > div > div:nth-child(3) > label > textarea');
-                await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div:nth-child(3) > label > textarea').focus();
-                });
+        const ip = await checkIp()
+        prettyConsole(chalk.magenta(`Current IP : ${ip}`))
 
-                await page.keyboard.type(wallet[x]);
+        exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
 
-                await sleep(1000)
-                
-                // Confirm Wallet
-                await iframe.waitForSelector('#root > div > div:nth-child(4) > button');
-                await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div:nth-child(4) > button').click();
-                })
+        // Wait for VPN connection to be established
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
 
-                let select = false
-                let fetch = 0
+        let isVpn = false;
+        let isConnected = false;
+        let tryConnectBrowser = 0
+        let vpn, browser, page;
 
-                do{
-                    if(fetch <= 5){
-                        try {
-                            // Select Account
-                            await iframe.waitForSelector('#root > div > button');
-                            await iframe.evaluate(() => {
-                                document.querySelector('#root > div > button').click();
-                            })
-    
-                            select = true
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Account'))
-                            fetch++
-                        }
-                    }else{
-                        prettyConsole(chalk.red(`Profile ${x} Fetching Account So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        continue loginloop
-                    }
-                }while(select === false)
-                
-                select = false
-                fetch = 0
-                let account
-        
-                do{
-                    if(fetch <= 5){
-                        try {
-                            // Get Account Name
-                            await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
-                            account = await iframe.evaluate(() => {
-                                const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
-                                return element.textContent
-                            })
-
-                            select = true
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Import Account'))
-                            fetch++
-                        }
-                    }else{
-                        prettyConsole(chalk.red(`Profile ${x} Importing Account So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        continue loginloop
-                    }
-                }while(select === false)
-
-                prettyConsole(chalk.green(`Account :${account}`))
-        
-                await browser.close()
-    
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = 10000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${rest} second`))
-                await sleep(rest)
+        while (!isVpn) {
+            vpn = await checkIp();
+            // Add a condition to check if the VPN connection is established
+            if (vpn !== ip) {
+                isVpn = true;
+                prettyConsole(chalk.green(`VPN connected successfully!, IP : ${vpn}`));
             }
+
+            // You may want to add a delay here to avoid continuous checking and reduce resource usage
+            await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
         }
+
+        if (isVpn) {
+            do{
+                if(tryConnectBrowser <= 5){
+                    try {
+                        if (x === 0) {
+                            browser = await puppeteer.launch({
+                                headless: true,
+                                args: [
+                                    `--user-data-dir=${chromeUserPath}`,
+                                    `--profile-directory=Default`,
+                                ]
+                            });
+                        } else {
+                            browser = await puppeteer.launch({
+                                headless: true,
+                                args: [
+                                    `--user-data-dir=${chromeUserPath}`,
+                                    `--profile-directory=Profile ${x}`,
+                                ]
+                            });
+                        }
     
-    })();
+                        const browserConnected = await browser.isConnected()
+        
+                        if(browserConnected){
+                            isConnected = true;
+                        }
+
+                        tryConnectBrowser++
+                    } catch (error) {
+                        prettyConsole(chalk.red(error.message))
+                        tryConnectBrowser++
+                    }
+                }else{
+                    prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
+                    continue loginloop
+                }
+            }while(!isConnected)
+            
+            await sleep(3000)
+            
+            prettyConsole(chalk.green(`Profile :${x}`))
+
+
+            const page = await browser.newPage();
+
+            await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
+
+            // Click claim now
+            await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+            await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+
+            // Click button launch
+            await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+            await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+
+            await sleep(3000)
+
+            // Handle iframe
+            const iframeSelector = '.payment-verification';
+            await page.waitForSelector(iframeSelector)
+            const iframeElementHandle = await page.$(iframeSelector);
+
+            await sleep(3000)
+
+            const iframe = await iframeElementHandle.contentFrame();
+
+            await sleep(3000)
+
+            let login = false
+            let tryLogin = 0
+            do {
+                if (tryLogin <= 5) {
+                    try {
+                        // Click Login
+                        await iframe.waitForSelector('#root > div > button');
+                        await iframe.evaluate(() => {
+                            document.querySelector('#root > div > button').click();
+                        })
+
+                        login = true
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Account'))
+                        tryLogin++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Profile ${x} Login Button Show So Take Long Time, Switch To Next Account`))
+                    await browser.close()
+                    continue loginloop
+                }
+            } while (login === false)
+
+            // Input Wallet
+            await iframe.waitForSelector('#root > div > div:nth-child(3) > label > textarea');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div:nth-child(3) > label > textarea').focus();
+            });
+
+            await page.keyboard.type(wallet[x]);
+
+            await sleep(1000)
+
+            // Confirm Wallet
+            await iframe.waitForSelector('#root > div > div:nth-child(4) > button');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div:nth-child(4) > button').click();
+            })
+
+            let select = false
+            let fetch = 0
+
+            do {
+                if (fetch <= 5) {
+                    try {
+                        // Select Account
+                        await iframe.waitForSelector('#root > div > button');
+                        await iframe.evaluate(() => {
+                            document.querySelector('#root > div > button').click();
+                        })
+
+                        select = true
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Account'))
+                        fetch++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Profile ${x} Fetching Account So Take Long Time, Switch To Next Account`))
+                    await browser.close()
+                    continue loginloop
+                }
+            } while (select === false)
+
+            select = false
+            fetch = 0
+            let account
+
+            do {
+                if (fetch <= 5) {
+                    try {
+                        // Get Account Name
+                        await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
+                        account = await iframe.evaluate(() => {
+                            const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
+                            return element.textContent
+                        })
+
+                        select = true
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Import Account'))
+                        fetch++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Profile ${x} Importing Account So Take Long Time, Switch To Next Account`))
+                    await browser.close()
+                    continue loginloop
+                }
+            } while (select === false)
+
+            prettyConsole(chalk.green(`Account :${account}`))
+
+            await browser.close()
+
+            exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+            const rest = 10000
+            prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${rest} second`))
+            await sleep(rest)
+        }
+    }
+
+})();
