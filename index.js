@@ -87,7 +87,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
     // Check Price Upgrade Speed
     do {
-        if (checkElement <= 5) {
+        if (checkElement <= 3) {
             try {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
                 price = await iframe.evaluate(() => {
@@ -115,7 +115,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
             // Click For Upgrade
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
                         await iframe.evaluate(() => {
@@ -140,7 +140,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
             // Confirm Upgrade
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                         await iframe.evaluate(() => {
@@ -164,7 +164,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
             let upgraded = false
             // Make Sure Upgraded
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
                         await iframe.evaluate(() => {
@@ -190,7 +190,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
                 // Click Got it
                 do {
-                    if (checkElement <= 5) {
+                    if (checkElement <= 3) {
                         try {
                             await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                             account = await iframe.evaluate(() => {
@@ -213,7 +213,7 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
                 // Check Level Speed
                 do {
-                    if (checkElement <= 5) {
+                    if (checkElement <= 3) {
                         try {
                             await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
                             level = await iframe.evaluate(() => {
@@ -256,7 +256,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 
     // Check Price Upgrade Storage
     do {
-        if (checkElement <= 5) {
+        if (checkElement <= 3) {
             try {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
                 price = await iframe.evaluate(() => {
@@ -284,7 +284,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 
             // Click For Upgrade
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
                         account = await iframe.evaluate(() => {
@@ -309,7 +309,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 
             // Confirm Upgrade
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                         account = await iframe.evaluate(() => {
@@ -333,7 +333,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
             let upgraded = false
             // Make Sure Upgraded
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
                         await iframe.evaluate(() => {
@@ -361,7 +361,7 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
 
                 // Check Level Storage
                 do {
-                    if (checkElement <= 5) {
+                    if (checkElement <= 3) {
                         try {
                             await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
                             level = await iframe.evaluate(() => {
@@ -434,7 +434,7 @@ async function main() {
 
         if (isVpn) {
             do {
-                if (tryConnectBrowser <= 5) {
+                if (tryConnectBrowser <= 3) {
                     try {
                         if (x === 0) {
                             browser = await puppeteer.launch({
@@ -486,7 +486,7 @@ async function main() {
 
             // Click claim now
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
                         await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
@@ -508,7 +508,7 @@ async function main() {
 
             // Click button launch
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
                         await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
@@ -534,7 +534,7 @@ async function main() {
             const iframeSelector = '.payment-verification';
             let iframeElementHandle
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await page.waitForSelector(iframeSelector)
                         iframeElementHandle = await page.$(iframeSelector);
@@ -561,7 +561,7 @@ async function main() {
 
             // Get Account Name
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
                         account = await iframe.evaluate(() => {
@@ -593,7 +593,7 @@ async function main() {
 
             // Check Storage
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                         storage = await iframe.evaluate(() => {
@@ -622,7 +622,7 @@ async function main() {
 
             // Click Storage
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
                         await iframe.evaluate(() => {
@@ -648,7 +648,7 @@ async function main() {
 
             // Check Balance
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
                         balance = await iframe.evaluate(() => {
@@ -765,7 +765,7 @@ async function main() {
 
                         // Click Claim
                         do {
-                            if (checkElement <= 5) {
+                            if (checkElement <= 3) {
                                 try {
                                     await iframe.waitForSelector(claimSelector);
                                     await iframe.evaluate((selector) => {
@@ -896,7 +896,7 @@ async function main() {
 
             // Click Boost
             do {
-                if (checkElement <= 5) {
+                if (checkElement <= 3) {
                     try {
                         await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
                         account = await iframe.evaluate(() => {
