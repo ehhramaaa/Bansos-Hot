@@ -11,7 +11,7 @@ const cron = require('node-cron');
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
 const chromeUserPath = path.resolve(__dirname, 'Chrome', 'Data', 'profile');
-const chromeExe = path.resolve(__dirname, 'Chrome', 'App', 'Chrome-bin', 'chrome.exe');
+const chromeExe = path.resolve(__dirname, 'Chrome', 'GoogleChromePortable.exe');
 let scheduledTask;
 
 function sleep(ms) {
@@ -455,8 +455,11 @@ async function main() {
                         if(browserConnected){
                             isConnected = true;
                         }
+
+                        tryConnectBrowser++
                     } catch (error) {
                         prettyConsole(chalk.red(error.message))
+                        tryConnectBrowser++
                     }
                 }else{
                     prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
