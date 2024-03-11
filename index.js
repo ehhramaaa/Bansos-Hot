@@ -109,6 +109,28 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
 
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
+    // Check Level Speed
+    do {
+        if (checkElement <= 3) {
+            try {
+                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                level = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                    return element.textContent
+                })
+
+                elementFound = true
+                checkElement = 0
+            } catch (error) {
+                prettyConsole(chalk.yellow('Still Fetch Level Speed'))
+                checkElement++
+            }
+        } else {
+            prettyConsole(chalk.red(`Level Speed Show So Take Long Time, Switch Upgrade Storage`))
+            return
+        }
+    } while (elementFound === false)
+
     if (balance >= price) {
         if (!level.includes('5')) {
             elementFound = false
@@ -277,6 +299,28 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
     } while (elementFound === false)
 
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
+
+    // Check Level Storage
+    do {
+        if (checkElement <= 3) {
+            try {
+                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                level = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                    return element.textContent
+                })
+
+                elementFound = true
+                checkElement = 0
+            } catch (error) {
+                prettyConsole(chalk.yellow('Still Fetch Level Storage'))
+                checkElement++
+            }
+        } else {
+            prettyConsole(chalk.red(`Level Storage Show So Take Long Time, Switch To Next Profile`))
+            return
+        }
+    } while (elementFound === false)
 
     if (balance >= price) {
         if (!level.includes('5')) {
