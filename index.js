@@ -373,7 +373,7 @@ async function main() {
 
             await checkElement(varElement, x, 'Click Claim Now')
 
-            await sleep(3000)
+            await sleep(5000)
 
             // Click Button Launch
             varElement = async (x) => {
@@ -398,6 +398,7 @@ async function main() {
             await sleep(3000)
 
             const iframe = await iframeElementHandle.contentFrame();
+
             let account
             
             // Get Account Name
@@ -409,16 +410,17 @@ async function main() {
                 })
             }
 
+            await checkElement(varElement, x, 'Get Account Name')
+
             prettyConsole(chalk.green(`Account :${account}`))
             
             let near
-            await checkElement(varElement, x, 'Get Account Name')
             
             // Get Near Balance
             varElement = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
                     return element.textContent
                 })
             }
