@@ -92,6 +92,7 @@ async function checkElement(element, x, message) {
 
                     if (browserConnected) {
                         checkElement = true
+                        return checkElement
                     }
                 } else {
                     await element(x)
@@ -104,7 +105,8 @@ async function checkElement(element, x, message) {
             }
         } else {
             prettyConsole(chalk.red(`Profile ${x} ${message} Show So Take Long Time, Switch To Next Account`))
-            continue
+            checkElement = true
+            return false
         }
     }
 }
@@ -112,6 +114,7 @@ async function checkElement(element, x, message) {
 const upgradeSpeed = async (iframe, balance, varElement, x) => {
     let level
     let price
+    let isContinue
     // Check Price Upgrade Speed
     varElement = async (x) => {
         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
@@ -121,7 +124,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
         })
     }
 
-    await checkElement(varElement, x, 'Check Price Upgrade Speed')
+    isContinue = await checkElement(varElement, x, 'Check Price Upgrade Speed')
+
+    if(!isContinue){
+        return false
+    }
 
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
@@ -134,7 +141,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
         })
     }
 
-    await checkElement(varElement, x, 'Check Level Speed')
+    isContinue = await checkElement(varElement, x, 'Check Level Speed')
+
+    if(!isContinue){
+        return false
+    }
 
     if (balance >= price) {
         if (!level.includes('5')) {
@@ -146,7 +157,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            await checkElement(varElement, x, 'Click For Upgrade')
+            isContinue = await checkElement(varElement, x, 'Click For Upgrade')
+
+            if(!isContinue){
+                return false
+            }
 
             await sleep(3000)
 
@@ -158,7 +173,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            await checkElement(varElement, x, 'Confirm Upgrade')
+            isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
+
+            if(!isContinue){
+                return false
+            }
 
             // Make Sure Upgraded
             varElement = async (x) => {
@@ -180,7 +199,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                     })
                 }
 
-                await checkElement(varElement, x, 'Click Got it')
+                isContinue = await checkElement(varElement, x, 'Click Got it')
+
+                if(!isContinue){
+                    return false
+                }
 
                 await sleep(3000)
 
@@ -193,7 +216,11 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                     })
                 }
 
-                await checkElement(varElement, x, 'Check Level Speed')
+                isContinue = await checkElement(varElement, x, 'Check Level Speed')
+
+                if(!isContinue){
+                    return false
+                }
 
                 prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
 
@@ -212,6 +239,7 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 const upgradeStorage = async (iframe, balance, varElement, x) => {
     let level
     let price
+    let isContinue
 
     // Check Price Upgrade Storage
     varElement = async (x) => {
@@ -222,8 +250,11 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
         })
     }
 
-    await checkElement(varElement, x, 'Check Price Upgrade Storage')
+    isContinue = await checkElement(varElement, x, 'Check Price Upgrade Storage')
 
+    if(!isContinue){
+        return false
+    }
 
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
 
@@ -236,7 +267,11 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
         })
     }
 
-    await checkElement(varElement, x, 'Check Level Storage')
+    isContinue = await checkElement(varElement, x, 'Check Level Storage')
+
+    if(!isContinue){
+        return false
+    }
 
     if (balance >= price) {
         if (!level.includes('5')) {
@@ -248,7 +283,11 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            await checkElement(varElement, x, 'Click For Upgrade')
+            isContinue = await checkElement(varElement, x, 'Click For Upgrade')
+
+            if(!isContinue){
+                return false
+            }
 
             await sleep(3000)
 
@@ -260,7 +299,11 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            await checkElement(varElement, x, 'Confirm Upgrade')
+            isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
+
+            if(!isContinue){
+                return false
+            }
 
             // Make Sure Upgraded
             varElement = async (x) => {
@@ -303,7 +346,7 @@ async function main() {
     const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
     const ovpnConfig = await ovpnReadConfig(folderPath)
 
-    for (let x = 0; x <= 21; x++) {
+    mainLoop: for (let x = 0; x <= 21; x++) {
         exec(`${ovpnPath} --command disconnect_all`);
 
         await sleep(7000)
@@ -317,7 +360,7 @@ async function main() {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         let isVpn = false;
-        let vpn, browser, varElement
+        let vpn, browser, varElement, isContinue
 
         while (!isVpn) {
             vpn = await checkIp();
@@ -349,7 +392,11 @@ async function main() {
                 return browser
             }
 
-            await checkElement(varElement, x, 'Connecting Browser')
+            isContinue = await checkElement(varElement, x, 'Connecting Browser')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             await sleep(3000)
 
@@ -363,7 +410,11 @@ async function main() {
                 await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
             }
 
-            await checkElement(varElement, x, 'Goto Link')
+            isContinue = await checkElement(varElement, x, 'Goto Link')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             // Click Claim Now
             varElement = async (x) => {
@@ -371,9 +422,13 @@ async function main() {
                 await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
             }
 
-            await checkElement(varElement, x, 'Click Claim Now')
+            isContinue = await checkElement(varElement, x, 'Click Claim Now')
 
-            await sleep(5000)
+            if(!isContinue){
+                continue mainLoop
+            }
+
+            await sleep(3000)
 
             // Click Button Launch
             varElement = async (x) => {
@@ -381,7 +436,11 @@ async function main() {
                 await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
             }
 
-            await checkElement(varElement, x, 'Click Button Launch')
+            isContinue = await checkElement(varElement, x, 'Click Button Launch')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             await sleep(3000)
 
@@ -393,14 +452,18 @@ async function main() {
                 iframeElementHandle = await page.$(iframeSelector);
             }
 
-            await checkElement(varElement, x, 'Handle iframe')
+            isContinue = await checkElement(varElement, x, 'Handle iframe')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             await sleep(3000)
 
             const iframe = await iframeElementHandle.contentFrame();
 
             let account
-            
+
             // Get Account Name
             varElement = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
@@ -410,12 +473,16 @@ async function main() {
                 })
             }
 
-            await checkElement(varElement, x, 'Get Account Name')
+            isContinue = await checkElement(varElement, x, 'Get Account Name')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             prettyConsole(chalk.green(`Account :${account}`))
-            
+
             let near
-            
+
             // Get Near Balance
             varElement = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
@@ -424,9 +491,13 @@ async function main() {
                     return element.textContent
                 })
             }
-            
-            await checkElement(varElement, x, 'Get Near Balance')
-            
+
+            isContinue = await checkElement(varElement, x, 'Get Near Balance')
+
+            if(!isContinue){
+                continue mainLoop
+            }
+
             prettyConsole(chalk.green(`Near Balance :${near}`))
 
             let storage = 0
@@ -444,7 +515,11 @@ async function main() {
                 });
             }
 
-            await checkElement(varElement, x, 'Check Storage')
+            isContinue = await checkElement(varElement, x, 'Check Storage')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             prettyConsole(chalk.green(`Storage :${storage}%`))
 
@@ -456,7 +531,11 @@ async function main() {
                 });
             }
 
-            await checkElement(varElement, x, 'Click Storage')
+            isContinue = await checkElement(varElement, x, 'Click Storage')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             let balance
 
@@ -469,7 +548,11 @@ async function main() {
                 });
             }
 
-            await checkElement(varElement, x, 'Check Balance')
+            isContinue = await checkElement(varElement, x, 'Check Balance')
+
+            if(!isContinue){
+                continue mainLoop
+            }
 
             prettyConsole(chalk.green(`Balance :${balance} ${chalk.yellow('$HOT🔥')}`))
 
@@ -482,7 +565,11 @@ async function main() {
                     });
                 }
 
-                await checkElement(varElement, x, 'Click Gas')
+                isContinue = await checkElement(varElement, x, 'Click Gas')
+
+                if(!isContinue){
+                    continue mainLoop
+                }
 
                 // Click Tab Gas
                 varElement = async (x) => {
@@ -492,7 +579,11 @@ async function main() {
                     });
                 }
 
-                await checkElement(varElement, x, 'Click Tab Gas')
+                isContinue = await checkElement(varElement, x, 'Click Tab Gas')
+
+                if(!isContinue){
+                    continue mainLoop
+                }
 
                 // Wait For Counting Gas Amount
                 await sleep(10000)
@@ -508,7 +599,11 @@ async function main() {
                     });
                 }
 
-                await checkElement(varElement, x, 'Check Gas Free Amount')
+                isContinue = await checkElement(varElement, x, 'Check Gas Free Amount')
+
+                if(!isContinue){
+                    continue mainLoop
+                }
 
                 prettyConsole(chalk.green(`Gas Free :${gasFree}`))
 
@@ -518,7 +613,11 @@ async function main() {
                     await page.click('.popup-close');
                 }
 
-                await checkElement(varElement, x, 'Click Back')
+                isContinue = await checkElement(varElement, x, 'Click Back')
+
+                if(!isContinue){
+                    continue mainLoop
+                }
 
                 // Click Storage
                 varElement = async (x) => {
@@ -528,8 +627,11 @@ async function main() {
                     });
                 }
 
-                await checkElement(varElement, x, 'Click Storage')
+                isContinue = await checkElement(varElement, x, 'Click Storage')
 
+                if(!isContinue){
+                    continue mainLoop
+                }
 
                 await sleep(3000)
 
@@ -548,7 +650,11 @@ async function main() {
                             }, claimSelector);
                         }
 
-                        await checkElement(varElement, x, 'Click Claim')
+                        isContinue = await checkElement(varElement, x, 'Click Claim')
+
+                        if(!isContinue){
+                            continue mainLoop
+                        }
 
                         prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT🔥')}`))
 
@@ -596,7 +702,11 @@ async function main() {
                                     })
                                 }
 
-                                await checkElement(varElement, x, 'Click Boost')
+                                isContinue = await checkElement(varElement, x, 'Click Boost')
+
+                                if(!isContinue){
+                                    continue mainLoop
+                                }
 
                                 await sleep(5000)
 
@@ -608,7 +718,11 @@ async function main() {
                                     await page.click('.btn-icon.popup-close');
                                 }
 
-                                await checkElement(varElement, x, 'Click Back')
+                                isContinue = await checkElement(varElement, x, 'Click Back')
+
+                                if(!isContinue){
+                                    continue mainLoop
+                                }
 
                                 prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT🔥')}`))
                                 reClaim++
@@ -634,10 +748,23 @@ async function main() {
                 })
             }
 
-            await checkElement(varElement, x, 'Click Boost')
+            isContinue = await checkElement(varElement, x, 'Click Boost')
 
-            await upgradeSpeed(iframe, balance, varElement, x)
-            // await upgradeStorage(iframe, balance, varElement, x)
+            if(!isContinue){
+                continue mainLoop
+            }
+
+            isContinue = await upgradeSpeed(iframe, balance, varElement, x)
+
+            if(!isContinue){
+                continue mainLoop
+            }
+
+            // isContinue = await upgradeStorage(iframe, balance, varElement, x)
+
+            // if(!isContinue){
+            //     continue mainLoop
+            // }
 
             await browser.close()
 
