@@ -82,18 +82,19 @@ const changeCronSchedule = (minute) => {
 async function checkElement(element, x, message) {
     let checkElement = false
     let trycheckElement = 0
-    do {
+
+    while (checkElement === false) {
         if (trycheckElement <= 3) {
             try {
-                await element()
-
                 if (message === 'Connecting Browser') {
+                    const browser = await element(x)
                     const browserConnected = await browser.isConnected()
 
                     if (browserConnected) {
                         checkElement = true
                     }
                 } else {
+                    await element(x)
                     checkElement = true
                     return checkElement
                 }
@@ -105,10 +106,10 @@ async function checkElement(element, x, message) {
             prettyConsole(chalk.red(`Profile ${x} ${message} Show So Take Long Time, Switch To Next Account`))
             return
         }
-    } while (checkElement === false)
+    }
 }
 
-const upgradeSpeed = async (iframe, balance, varElement) => {
+const upgradeSpeed = async (iframe, balance, varElement, x) => {
     let level
     let price
     // Check Price Upgrade Speed
@@ -208,7 +209,7 @@ const upgradeSpeed = async (iframe, balance, varElement) => {
     }
 }
 
-const upgradeStorage = async (iframe, balance, varElement) => {
+const upgradeStorage = async (iframe, balance, varElement, x) => {
     let level
     let price
 
@@ -248,9 +249,9 @@ const upgradeStorage = async (iframe, balance, varElement) => {
             }
 
             await checkElement(varElement, x, 'Click For Upgrade')
-            
+
             await sleep(3000)
-            
+
             // Confirm Upgrade
             varElement = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
@@ -258,9 +259,9 @@ const upgradeStorage = async (iframe, balance, varElement) => {
                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                 })
             }
-            
+
             await checkElement(varElement, x, 'Confirm Upgrade')
-            
+
             // Make Sure Upgraded
             varElement = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
@@ -269,11 +270,11 @@ const upgradeStorage = async (iframe, balance, varElement) => {
                     return element.textContent
                 })
             }
-            
+
             const upgraded = await checkElement(varElement, x, 'Make Sure Upgraded')
-            
+
             await sleep(3000)
-            
+
             if (upgraded) {
                 // Check Level Storage
                 varElement = async (x) => {
@@ -333,23 +334,19 @@ async function main() {
         if (isVpn) {
             // Connect Browser
             varElement = async (x) => {
-                if (x === 0) {
-                    browser = await puppeteer.launch({
-                        headless: true,
-                        args: [
-                            `--user-data-dir=${chromeUserPath}`,
-                            `--profile-directory=Default`,
-                        ]
-                    });
-                } else {
-                    browser = await puppeteer.launch({
-                        headless: true,
-                        args: [
-                            `--user-data-dir=${chromeUserPath}`,
-                            `--profile-directory=Profile ${x}`,
-                        ]
-                    });
-                }
+                let launchOptions = {
+                    headless: true,
+                    args: [
+                        `--user-data-dir=${chromeUserPath}`,
+                        x === 0 ? '--profile-directory=Default' : `--profile-directory=Profile ${x}`
+                    ]
+                };
+
+                browser = await puppeteer.launch(launchOptions);
+
+                await sleep(3000)
+
+                return browser
             }
 
             await checkElement(varElement, x, 'Connecting Browser')
@@ -459,7 +456,6 @@ async function main() {
             prettyConsole(chalk.green(`Balance :${balance} ${chalk.yellow('$HOT🔥')}`))
 
             if (storage >= threshold) {
-
                 // Click Gas
                 varElement = async (x) => {
                     await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
@@ -469,7 +465,7 @@ async function main() {
                 }
 
                 await checkElement(varElement, x, 'Click Gas')
-                
+
                 // Click Tab Gas
                 varElement = async (x) => {
                     await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)');
@@ -479,7 +475,7 @@ async function main() {
                 }
 
                 await checkElement(varElement, x, 'Click Tab Gas')
-                
+
                 // Wait For Counting Gas Amount
                 await sleep(10000)
 
@@ -506,18 +502,28 @@ async function main() {
 
                 await checkElement(varElement, x, 'Click Back')
 
+                // Click Storage
+                varElement = async (x) => {
+                    await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
+                    await iframe.evaluate(() => {
+                        document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
+                    });
+                }
+
+                await checkElement(varElement, x, 'Click Storage')
+
+
                 await sleep(3000)
 
                 let claimed = false
                 let reClaim = 0
 
                 // Claim $HOT🔥
-                const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                 do {
                     if (reClaim <= 5) {
-
                         // Click Claim
                         varElement = async (x) => {
+                            const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                             await iframe.waitForSelector(claimSelector);
                             await iframe.evaluate((selector) => {
                                 document.querySelector(selector).click();
@@ -564,15 +570,15 @@ async function main() {
                                 // Tweak if not claimed with clicking boost
                                 prettyConsole(chalk.red(`Claiming ${chalk.yellow('$HOT🔥')} So Take Long Time, Tweaking`))
 
-                                // Click Gas
+                                // Click Boost
                                 varElement = async (x) => {
-                                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
-                                    await iframe.evaluate(() => {
-                                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
-                                    });
+                                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
+                                    account = await iframe.evaluate(() => {
+                                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
+                                    })
                                 }
 
-                                await checkElement(varElement, x, 'Click Gas')
+                                await checkElement(varElement, x, 'Click Boost')
 
                                 await sleep(5000)
 
@@ -612,8 +618,8 @@ async function main() {
 
             await checkElement(varElement, x, 'Click Boost')
 
-            await upgradeSpeed(iframe, balance, varElement)
-            await upgradeStorage(iframe, balance, varElement)
+            await upgradeSpeed(iframe, balance, varElement, x)
+            // await upgradeStorage(iframe, balance, varElement, x)
 
             await browser.close()
 

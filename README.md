@@ -7,7 +7,7 @@
  - Check Current Ip And Connected Ip (If Use Vpn)
  - Check Gas Free For Claim
  - Auto Upgrade Speed
- - Auto Upgrade Storage
+ - Auto Upgrade Storage (If U Can Use U Can Active With Remove Quote In Line 622)
  - Only Claiming If Level Storage And Level Speed Already 5
 
 # Requirement : 
