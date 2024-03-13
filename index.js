@@ -492,21 +492,23 @@ async function main() {
                 continue mainLoop
             }
 
+            let launch = false
+            let tryLaunch = 0
+            
             // Click Button Launch
-            varElement = async (x) => {
-                await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-            }
-
-            isContinue = await checkElement(varElement, x, 'Click Button Launch')
-
-            if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
+            while(!launch){
+                if(tryLaunch <= 3){
+                    try {
+                        await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+                        await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+                    } catch (error) {
+                        prettyConsole(chalk.yellow('Still Fetch Click Button Launch'))
+                    }
+                }else{
+                    prettyConsole(chalk.red('Fetch Click Button Launch Take To Long'))
+                    launch = true
+                    continue mainLoop
+                }
             }
 
             await sleep(3000)
@@ -562,9 +564,9 @@ async function main() {
 
             // Get Near Balance
             varElement = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
                     return element.textContent
                 })
             }
