@@ -432,10 +432,11 @@ async function main() {
             }
 
             await sleep(3000)
-
+            
             // Click Claim Now
             const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+                await sleep(3000)
                 await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
             }
 
