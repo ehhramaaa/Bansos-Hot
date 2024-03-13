@@ -847,21 +847,9 @@ async function main() {
                 continue mainLoop
             }
 
-            isContinue = await upgradeSpeed(iframe, balance, x)
+            await upgradeSpeed(iframe, balance, x)
 
-            if (!isContinue) {
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
-            }
-
-            // isContinue = await upgradeStorage(iframe, balance, x)
-
-            // if(!isContinue){
-            //     continue mainLoop
-            // }
+            // await upgradeStorage(iframe, balance, x)
 
             await browser.close()
 
