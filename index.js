@@ -126,7 +126,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
     isContinue = await checkElement(varElement, x, 'Check Price Upgrade Speed')
 
-    if(!isContinue){
+    if (!isContinue) {
+        await browser.close()
+        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+        const rest = (Math.random() * (30 - 15) + 15) * 1000
+        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+        await sleep(rest)
         return false
     }
 
@@ -143,7 +148,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
     isContinue = await checkElement(varElement, x, 'Check Level Speed')
 
-    if(!isContinue){
+    if (!isContinue) {
+        await browser.close()
+        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+        const rest = (Math.random() * (30 - 15) + 15) * 1000
+        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+        await sleep(rest)
         return false
     }
 
@@ -159,7 +169,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
             isContinue = await checkElement(varElement, x, 'Click For Upgrade')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 return false
             }
 
@@ -175,7 +190,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
             isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 return false
             }
 
@@ -201,7 +221,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
                 isContinue = await checkElement(varElement, x, 'Click Got it')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     return false
                 }
 
@@ -218,7 +243,12 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
 
                 isContinue = await checkElement(varElement, x, 'Check Level Speed')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     return false
                 }
 
@@ -252,7 +282,12 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
 
     isContinue = await checkElement(varElement, x, 'Check Price Upgrade Storage')
 
-    if(!isContinue){
+    if (!isContinue) {
+        await browser.close()
+        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+        const rest = (Math.random() * (30 - 15) + 15) * 1000
+        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+        await sleep(rest)
         return false
     }
 
@@ -269,7 +304,12 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
 
     isContinue = await checkElement(varElement, x, 'Check Level Storage')
 
-    if(!isContinue){
+    if (!isContinue) {
+        await browser.close()
+        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+        const rest = (Math.random() * (30 - 15) + 15) * 1000
+        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+        await sleep(rest)
         return false
     }
 
@@ -285,7 +325,12 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
 
             isContinue = await checkElement(varElement, x, 'Click For Upgrade')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 return false
             }
 
@@ -301,7 +346,12 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
 
             isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 return false
             }
 
@@ -394,7 +444,11 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Connecting Browser')
 
-            if(!isContinue){
+            if (!isContinue) {
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -412,7 +466,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Goto Link')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -424,11 +483,14 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Click Claim Now')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
-
-            await sleep(3000)
 
             // Click Button Launch
             varElement = async (x) => {
@@ -438,7 +500,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Click Button Launch')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -454,7 +521,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Handle iframe')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -475,7 +547,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Get Account Name')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -494,7 +571,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Get Near Balance')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -517,7 +599,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Check Storage')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -533,7 +620,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Click Storage')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -550,7 +642,12 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Check Balance')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
@@ -567,7 +664,12 @@ async function main() {
 
                 isContinue = await checkElement(varElement, x, 'Click Gas')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     continue mainLoop
                 }
 
@@ -581,7 +683,12 @@ async function main() {
 
                 isContinue = await checkElement(varElement, x, 'Click Tab Gas')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     continue mainLoop
                 }
 
@@ -601,7 +708,12 @@ async function main() {
 
                 isContinue = await checkElement(varElement, x, 'Check Gas Free Amount')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     continue mainLoop
                 }
 
@@ -615,7 +727,12 @@ async function main() {
 
                 isContinue = await checkElement(varElement, x, 'Click Back')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     continue mainLoop
                 }
 
@@ -629,7 +746,12 @@ async function main() {
 
                 isContinue = await checkElement(varElement, x, 'Click Storage')
 
-                if(!isContinue){
+                if (!isContinue) {
+                    await browser.close()
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
                     continue mainLoop
                 }
 
@@ -652,7 +774,12 @@ async function main() {
 
                         isContinue = await checkElement(varElement, x, 'Click Claim')
 
-                        if(!isContinue){
+                        if (!isContinue) {
+                            await browser.close()
+                            exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                            const rest = (Math.random() * (30 - 15) + 15) * 1000
+                            prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                            await sleep(rest)
                             continue mainLoop
                         }
 
@@ -704,7 +831,12 @@ async function main() {
 
                                 isContinue = await checkElement(varElement, x, 'Click Boost')
 
-                                if(!isContinue){
+                                if (!isContinue) {
+                                    await browser.close()
+                                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                                    await sleep(rest)
                                     continue mainLoop
                                 }
 
@@ -720,7 +852,12 @@ async function main() {
 
                                 isContinue = await checkElement(varElement, x, 'Click Back')
 
-                                if(!isContinue){
+                                if (!isContinue) {
+                                    await browser.close()
+                                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                                    await sleep(rest)
                                     continue mainLoop
                                 }
 
@@ -750,13 +887,22 @@ async function main() {
 
             isContinue = await checkElement(varElement, x, 'Click Boost')
 
-            if(!isContinue){
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
             isContinue = await upgradeSpeed(iframe, balance, varElement, x)
 
-            if(!isContinue){
+            if (!isContinue) {
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
                 continue mainLoop
             }
 
