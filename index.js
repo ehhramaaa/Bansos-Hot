@@ -104,7 +104,7 @@ async function checkElement(element, x, message) {
             }
         } else {
             prettyConsole(chalk.red(`Profile ${x} ${message} Show So Take Long Time, Switch To Next Account`))
-            return
+            continue
         }
     }
 }
