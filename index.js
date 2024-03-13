@@ -431,6 +431,8 @@ async function main() {
                 continue mainLoop
             }
 
+            await sleep(3000)
+            
             // Click Claim Now
             const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
@@ -448,9 +450,12 @@ async function main() {
                 continue mainLoop
             }
 
+            await sleep(3000)
+            
             // Click Button Launch
             const buttonLaunch = async (x) => {
                 await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+                await sleep(3000)
                 await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
             }
 
