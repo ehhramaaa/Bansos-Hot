@@ -492,23 +492,21 @@ async function main() {
                 continue mainLoop
             }
 
-            let launch = false
-            let tryLaunch = 0
-            
             // Click Button Launch
-            while(!launch){
-                if(tryLaunch <= 3){
-                    try {
-                        await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                        await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Click Button Launch'))
-                    }
-                }else{
-                    prettyConsole(chalk.red('Fetch Click Button Launch Take To Long'))
-                    launch = true
-                    continue mainLoop
-                }
+            varElement = async (x) => {
+                await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+                await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+            }
+
+            isContinue = await checkElement(varElement, x, 'Click Button Launch')
+
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
+                continue mainLoop
             }
 
             await sleep(3000)
