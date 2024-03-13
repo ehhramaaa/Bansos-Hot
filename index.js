@@ -11,7 +11,7 @@ const os = require('os')
 
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = `C:\\Users\\${os.userInfo().username}\\AppData\\Local\\Google\\Chrome\\User Data`;
+const chromeUserPath = `${os.homedir()}\\AppData\\Local\\Google\\Chrome\\User Data`;
 let scheduledTask;
 
 function sleep(ms) {
@@ -86,19 +86,9 @@ async function checkElement(element, x, message) {
     while (checkElement === false) {
         if (trycheckElement <= 3) {
             try {
-                if (message === 'Connecting Browser') {
-                    const browser = await element(x)
-                    const browserConnected = await browser.isConnected()
-
-                    if (browserConnected) {
-                        checkElement = true
-                        return checkElement
-                    }
-                } else {
-                    await element(x)
-                    checkElement = true
-                    return checkElement
-                }
+                await element(x)
+                checkElement = true
+                return checkElement
             } catch (error) {
                 prettyConsole(chalk.yellow(`Still Fetch ${message}`))
                 trycheckElement++
@@ -315,9 +305,9 @@ const upgradeStorage = async (iframe, balance, x) => {
             }
 
             const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
-            
+
             await sleep(3000)
-            
+
             if (upgraded) {
                 // Check Level Storage
                 const checkLevel = async (x) => {
@@ -327,7 +317,7 @@ const upgradeStorage = async (iframe, balance, x) => {
                         return element.textContent
                     })
                 }
-                
+
                 const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
 
                 if (!isContinue) {
@@ -366,6 +356,8 @@ async function main() {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         let isVpn = false;
+        let tryConnectBrowser = 0
+        let isBrowser = false
         let vpn, browser, isContinue
 
         while (!isVpn) {
@@ -382,31 +374,39 @@ async function main() {
 
         if (isVpn) {
             // Connect Browser
-            const connectBrowser = async (x) => {
-                let launchOptions = {
-                    headless: true,
-                    args: [
-                        `--user-data-dir=${chromeUserPath}`,
-                        x === 0 ? '--profile-directory=Default' : `--profile-directory=Profile ${x}`
-                    ]
-                };
+            do {
+                if (tryConnectBrowser <= 5) {
+                    try {
+                        let launchOptions = {
+                            headless: true,
+                            args: [
+                                `--user-data-dir=${chromeUserPath}`,
+                                x === 0 ? '--profile-directory=Default' : `--profile-directory=Profile ${x}`
+                            ]
+                        };
 
-                browser = await puppeteer.launch(launchOptions);
+                        browser = await puppeteer.launch(launchOptions)
 
-                await sleep(3000)
+                        const browserConnected = await browser.isConnected()
 
-                return browser
-            }
+                        if (browserConnected) {
+                            isBrowser = true;
+                        }
 
-            isContinue = await checkElement(connectBrowser, x, 'Connecting Browser')
-
-            if (!isContinue) {
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
-            }
+                        tryConnectBrowser++
+                    } catch (error) {
+                        prettyConsole(chalk.red(error.message))
+                        tryConnectBrowser++
+                    }
+                } else {
+                    prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
+                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                    const rest = (Math.random() * (30 - 15) + 15) * 1000
+                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                    await sleep(rest)
+                    continue mainLoop
+                }
+            } while (!isBrowser)
 
             await sleep(3000)
 
@@ -432,7 +432,7 @@ async function main() {
             }
 
             await sleep(3000)
-            
+
             // Click Claim Now
             const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
@@ -451,7 +451,7 @@ async function main() {
             }
 
             await sleep(3000)
-            
+
             // Click Button Launch
             const buttonLaunch = async (x) => {
                 await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
