@@ -378,7 +378,7 @@ async function main() {
                 if (tryConnectBrowser <= 5) {
                     try {
                         let launchOptions = {
-                            headless: true,
+                            headless: false,
                             args: [
                                 `--user-data-dir=${chromeUserPath}`,
                                 x === 0 ? '--profile-directory=Default' : `--profile-directory=Profile ${x}`
