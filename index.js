@@ -562,9 +562,9 @@ async function main() {
 
             // Get Near Balance
             varElement = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div:nth-child(3) > div > div:nth-child(2) > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
                     return element.textContent
                 })
             }
@@ -572,12 +572,7 @@ async function main() {
             isContinue = await checkElement(varElement, x, 'Get Near Balance')
 
             if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
+                prettyConsole(chalk.green(`Are You Have UWON? If U Have, Chage Selector At Line 565 And 566`))
             }
 
             prettyConsole(chalk.green(`Near Balance :${near}`))
