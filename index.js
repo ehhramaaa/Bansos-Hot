@@ -373,6 +373,8 @@ async function main() {
 
             await checkElement(varElement, x, 'Click Claim Now')
 
+            await sleep(3000)
+
             // Click Button Launch
             varElement = async (x) => {
                 await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
