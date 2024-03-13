@@ -7,10 +7,11 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const cron = require('node-cron');
+const os = require('os')
 
 const folderPath = 'C:\\Program Files\\OpenVPN\\config';
 const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
+const chromeUserPath = `${os.homedir()}\\AppData\\Local\\Google\\Chrome\\User Data`;
 let scheduledTask;
 
 function sleep(ms) {
@@ -78,184 +79,120 @@ const changeCronSchedule = (minute) => {
     });
 };
 
-const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
-    elementFound = false
-    let level
-
-    elementFound = false
-    let price
-
-    // Check Price Upgrade Speed
+async function checkElement(element, message) {
+    let checkElement = false
+    let trycheckElement = 0
     do {
-        if (checkElement <= 3) {
+        if (trycheckElement <= 3) {
             try {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
-                price = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
-                    return parseFloat(element.textContent)
-                })
+                await element()
 
-                elementFound = true
-                checkElement = 0
+                if (message === 'Connecting Browser') {
+                    const browserConnected = await browser.isConnected()
+
+                    if (browserConnected) {
+                        checkElement = true
+                    }
+                } else {
+                    checkElement = true
+                    return checkElement
+                }
             } catch (error) {
-                prettyConsole(chalk.yellow('Still Fetch Price Upgrade Speed'))
-                checkElement++
+                prettyConsole(chalk.yellow(`Still Fetch ${message}`))
+                trycheckElement++
             }
         } else {
-            prettyConsole(chalk.red(`Price Upgrade Speed Show So Take Long Time, Switch Upgrade Storage`))
+            prettyConsole(chalk.red(`Profile ${x} ${message} Show So Take Long Time, Switch To Next Account`))
             return
         }
-    } while (elementFound === false)
+    } while (checkElement === false)
+}
+
+const upgradeSpeed = async (iframe, balance, varElement) => {
+    let level
+    let price
+    // Check Price Upgrade Speed
+    varElement = async () => {
+        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+        price = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+            return parseFloat(element.textContent)
+        })
+    }
+
+    await checkElement(varElement, 'Check Price Upgrade Speed')
 
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
-    elementFound = false
-
     // Check Level Speed
-    do {
-        if (checkElement <= 3) {
-            try {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                level = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                    return element.textContent
-                })
+    varElement = async () => {
+        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+        level = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+            return element.textContent
+        })
+    }
 
-                elementFound = true
-                checkElement = 0
-            } catch (error) {
-                prettyConsole(chalk.yellow('Still Fetch Level Speed'))
-                checkElement++
-            }
-        } else {
-            prettyConsole(chalk.red(`Level Speed Show So Take Long Time, Switch Upgrade Storage`))
-            return
-        }
-    } while (elementFound === false)
+    await checkElement(varElement, 'Check Level Speed')
 
     if (balance >= price) {
         if (!level.includes('5')) {
-            elementFound = false
-
             // Click For Upgrade
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
-                        await iframe.evaluate(() => {
-                            document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
+                await iframe.evaluate(() => {
+                    document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
+                })
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Boost Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Boost Button Show So Take Long Time, Switch Upgrade Storage`))
-                    return
-                }
-            } while (elementFound === false)
-
-            elementFound = false
+            await checkElement(varElement, 'Click For Upgrade')
 
             await sleep(3000)
 
             // Confirm Upgrade
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                        await iframe.evaluate(() => {
-                            document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                await iframe.evaluate(() => {
+                    document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                })
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                    return
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Confirm Upgrade')
 
-            elementFound = false
-
-            let upgraded = false
             // Make Sure Upgraded
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                        await iframe.evaluate(() => {
-                            const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                            return element.textContent
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                await iframe.evaluate(() => {
+                    const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                    return element.textContent
+                })
+            }
 
-                        elementFound = true
-                        upgraded = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
-                    return
-                }
-            } while (elementFound === false)
+            const upgraded = await checkElement(varElement, 'Make Sure Upgrade')
 
             if (upgraded) {
-                elementFound = false
-
                 // Click Got it
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                            account = await iframe.evaluate(() => {
-                                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                            })
+                varElement = async () => {
+                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                    account = await iframe.evaluate(() => {
+                        document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                    })
+                }
 
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully Button'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
-                        return
-                    }
-                } while (elementFound === false)
+                await checkElement(varElement, 'Click Got it')
 
                 await sleep(3000)
 
                 // Check Level Speed
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                            level = await iframe.evaluate(() => {
-                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                                return element.textContent
-                            })
+                varElement = async () => {
+                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                    level = await iframe.evaluate(() => {
+                        const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+                        return element.textContent
+                    })
+                }
 
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Level Speed'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Level Speed Show So Take Long Time, Switch Upgrade Storage`))
-                        return
-                    }
-                } while (elementFound === false)
+                await checkElement(varElement, 'Check Level Speed')
 
                 prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
 
@@ -271,163 +208,81 @@ const upgradeSpeed = async (iframe, balance, checkElement, elementFound) => {
     }
 }
 
-const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
-    elementFound = false
+const upgradeStorage = async (iframe, balance, varElement) => {
     let level
-
-    elementFound = false
     let price
 
     // Check Price Upgrade Storage
-    do {
-        if (checkElement <= 3) {
-            try {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
-                price = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
-                    return parseFloat(element.textContent)
-                })
+    varElement = async () => {
+        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+        price = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+            return parseFloat(element.textContent)
+        })
+    }
 
-                elementFound = true
-                checkElement = 0
-            } catch (error) {
-                prettyConsole(chalk.yellow('Still Fetch Price Upgrade Storage'))
-                checkElement++
-            }
-        } else {
-            prettyConsole(chalk.red(`Price Upgrade Speed Show So Take Long Time, Switch To Next Profile`))
-            return
-        }
-    } while (elementFound === false)
+    await checkElement(varElement, 'Check Price Upgrade Storage')
+
 
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
 
-    elementFound = false
-
     // Check Level Storage
-    do {
-        if (checkElement <= 3) {
-            try {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                level = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                    return element.textContent
-                })
+    varElement = async () => {
+        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+        level = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+            return element.textContent
+        })
+    }
 
-                elementFound = true
-                checkElement = 0
-            } catch (error) {
-                prettyConsole(chalk.yellow('Still Fetch Level Storage'))
-                checkElement++
-            }
-        } else {
-            prettyConsole(chalk.red(`Level Storage Show So Take Long Time, Switch To Next Profile`))
-            return
-        }
-    } while (elementFound === false)
+    await checkElement(varElement, 'Check Level Storage')
 
     if (balance >= price) {
         if (!level.includes('5')) {
-            elementFound = false
-
             // Click For Upgrade
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
-                        account = await iframe.evaluate(() => {
-                            document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
+                account = await iframe.evaluate(() => {
+                    document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
+                })
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Upgrade Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Upgrade Button Show So Take Long Time, Switch To Next Profile`))
-                    return
-                }
-            } while (elementFound === false)
-
-            elementFound = false
-
+            await checkElement(varElement, 'Click For Upgrade')
+            
             await sleep(3000)
-
+            
             // Confirm Upgrade
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                        account = await iframe.evaluate(() => {
-                            document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                        })
-
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Confirm Upgrade Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Confirm Upgrade Button Show So Take Long Time, Switch To Next Account`))
-                    return
-                }
-            } while (elementFound === false)
-
-            elementFound = false
-
-            let upgraded = false
+            varElement = async () => {
+                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                account = await iframe.evaluate(() => {
+                    document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                })
+            }
+            
+            await checkElement(varElement, 'Confirm Upgrade')
+            
             // Make Sure Upgraded
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                        await iframe.evaluate(() => {
-                            const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                            return element.textContent
-                        })
-
-                        elementFound = true
-                        upgraded = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Make Sure Upgrade Successfully'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Make Sure Upgrade Successfully Button Show So Take Long Time, Switch To Upgrade Storage`))
-                    return
-                }
-            } while (elementFound === false)
-
+            varElement = async () => {
+                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                await iframe.evaluate(() => {
+                    const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                    return element.textContent
+                })
+            }
+            
+            const upgraded = await checkElement(varElement, 'Make Sure Upgraded')
+            
             await sleep(3000)
-
+            
             if (upgraded) {
-                elementFound = false
-
                 // Check Level Storage
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                            level = await iframe.evaluate(() => {
-                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                                return element.textContent
-                            })
-
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Level Storage'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Level Storage Show So Take Long Time, Switch To Next Profile`))
-                        return
-                    }
-                } while (elementFound === false)
+                varElement = async () => {
+                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                    level = await iframe.evaluate(() => {
+                        const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+                        return element.textContent
+                    })
+                }
 
                 prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
             } else {
@@ -441,16 +296,13 @@ const upgradeStorage = async (iframe, balance, checkElement, elementFound) => {
     }
 }
 
-
 async function main() {
-
-    const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
-
     console.log(chalk.cyan(`\n<==================================[${moment().format('HH:mm:ss DD-MM-YYYY')}]==================================>`))
 
+    const minute = Math.floor(Math.random() * (15 - 1 + 1)) + 1
     const ovpnConfig = await ovpnReadConfig(folderPath)
 
-    mainLoop: for (let x = 0; x <= 20; x++) {
+    for (let x = 0; x <= 21; x++) {
         exec(`${ovpnPath} --command disconnect_all`);
 
         await sleep(7000)
@@ -461,12 +313,10 @@ async function main() {
         exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
 
         // Wait for VPN connection to be established
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
         let isVpn = false;
-        let isConnected = false;
-        let tryConnectBrowser = 0
-        let vpn, browser;
+        let vpn, browser, varElement
 
         while (!isVpn) {
             vpn = await checkIp();
@@ -481,43 +331,28 @@ async function main() {
         }
 
         if (isVpn) {
-            do {
-                if (tryConnectBrowser <= 3) {
-                    try {
-                        if (x === 0) {
-                            browser = await puppeteer.launch({
-                                headless: true,
-                                args: [
-                                    `--user-data-dir=${chromeUserPath}`,
-                                    `--profile-directory=Default`,
-                                ]
-                            });
-                        } else {
-                            browser = await puppeteer.launch({
-                                headless: true,
-                                args: [
-                                    `--user-data-dir=${chromeUserPath}`,
-                                    `--profile-directory=Profile ${x}`,
-                                ]
-                            });
-                        }
-
-                        const browserConnected = await browser.isConnected()
-
-                        if (browserConnected) {
-                            isConnected = true;
-                        }
-
-                        tryConnectBrowser++
-                    } catch (error) {
-                        prettyConsole(chalk.red(error.message))
-                        tryConnectBrowser++
-                    }
+            // Connect Browser
+            varElement = async () => {
+                if (x === 0) {
+                    browser = await puppeteer.launch({
+                        headless: true,
+                        args: [
+                            `--user-data-dir=${chromeUserPath}`,
+                            `--profile-directory=Default`,
+                        ]
+                    });
                 } else {
-                    prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
-                    continue mainLoop
+                    browser = await puppeteer.launch({
+                        headless: true,
+                        args: [
+                            `--user-data-dir=${chromeUserPath}`,
+                            `--profile-directory=Profile ${x}`,
+                        ]
+                    });
                 }
-            } while (!isConnected)
+            }
+
+            await checkElement(varElement, 'Connecting Browser')
 
             await sleep(3000)
 
@@ -526,279 +361,150 @@ async function main() {
             const page = await browser.newPage();
             await page.setDefaultNavigationTimeout(0);
 
-            await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
+            // Goto Link
+            varElement = async () => {
+                await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
+            }
 
+            await checkElement(varElement, 'Goto Link')
 
-            let elementFound = false
-            let checkElement = 0
+            // Click Claim Now
+            varElement = async () => {
+                await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+                await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+            }
 
-            // Click claim now
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-                        await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Button Claim Now'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Claim Now Button Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Click Claim Now')
 
-            elementFound = false
+            // Click Button Launch
+            varElement = async () => {
+                await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+                await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+            }
 
-            // Click button launch
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                        await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Button Launch'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Button Launch Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Click Button Launch')
 
             await sleep(3000)
-
-            elementFound = false
 
             // Handle iframe
             const iframeSelector = '.payment-verification';
             let iframeElementHandle
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await page.waitForSelector(iframeSelector)
-                        iframeElementHandle = await page.$(iframeSelector);
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Button Launch'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Button Launch Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            varElement = async () => {
+                await page.waitForSelector(iframeSelector)
+                iframeElementHandle = await page.$(iframeSelector);
+            }
+
+            await checkElement(varElement, 'Handle iframe')
 
             await sleep(3000)
 
             const iframe = await iframeElementHandle.contentFrame();
-
-            elementFound = false
             let account
 
             // Get Account Name
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
-                        account = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
-                            return element.textContent
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
+                account = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
+                    return element.textContent
+                })
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Account Name'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Account Name Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Get Account Name')
 
             prettyConsole(chalk.green(`Account :${account}`))
 
-            elementFound = false
             let storage = 0
             const threshold = 93;
 
             await sleep(5000)
 
             // Check Storage
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
-                        storage = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
-                            const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
-                            return Math.floor(parseFloat(height[0]))
-                        });
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                storage = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                    const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
+                    return Math.floor(parseFloat(height[0]))
+                });
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Storage'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Fetch Storage So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Check Storage')
 
             prettyConsole(chalk.green(`Storage :${storage}%`))
 
-            elementFound = false
-
             // Click Storage
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
-                        await iframe.evaluate(() => {
-                            document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
-                        });
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
+                await iframe.evaluate(() => {
+                    document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
+                });
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Storage Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Fetch Storage Button Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Click Storage')
 
-            elementFound = false
             let balance
 
             // Check Balance
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                        balance = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                            return parseFloat(element.textContent)
-                        });
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                balance = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                    return parseFloat(element.textContent)
+                });
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Balance'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Fetch Balance So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    continue mainLoop
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Check Balance')
 
             prettyConsole(chalk.green(`Balance :${balance} ${chalk.yellow('$HOT🔥')}`))
 
             if (storage >= threshold) {
-                elementFound = false
 
                 // Click Gas
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
-                            await iframe.evaluate(() => {
-                                document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
-                            });
+                varElement = async () => {
+                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
+                    await iframe.evaluate(() => {
+                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                    });
+                }
 
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Gas Button'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Profile ${profile} Fetch Gas Button Show So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        elementFound = 'error'
-                        continue mainLoop
-                    }
-                } while (elementFound === false)
+                await checkElement(varElement, 'Click Gas')
+                
+                // Click Tab Gas
+                varElement = async () => {
+                    await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)');
+                    await iframe.evaluate(() => {
+                        document.querySelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)').click();
+                    });
+                }
 
+                await checkElement(varElement, 'Click Tab Gas')
+                
+                // Wait For Counting Gas Amount
                 await sleep(10000)
 
-                elementFound = false
                 let gasFree
 
                 // Check Gas Free Amount
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div:nth-child(1) > h3');
-                            gasFree = await iframe.evaluate(() => {
-                                const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div:nth-child(1) > h3');
-                                return parseFloat(element.textContent)
-                            });
+                varElement = async () => {
+                    await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
+                    gasFree = await iframe.evaluate(() => {
+                        const element = document.querySelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
+                        return parseFloat(element.textContent)
+                    });
+                }
 
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Gas Amount'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Fetch Gas Amount So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        elementFound = 'error'
-                        continue mainLoop
-                    }
-                } while (elementFound === false)
+                await checkElement(varElement, 'Check Gas Free Amount')
 
                 prettyConsole(chalk.green(`Gas Free :${gasFree}`))
 
-                elementFound = false
-
                 // Click Back
-                do {
-                    if (checkElement <= 3) {
-                        try {
-                            await page.waitForSelector('.popup-close');
-                            await page.click('.popup-close');
+                varElement = async () => {
+                    await page.waitForSelector('.popup-close');
+                    await page.click('.popup-close');
+                }
 
-                            elementFound = true
-                            checkElement = 0
-                        } catch (error) {
-                            prettyConsole(chalk.yellow('Still Fetch Back Button'))
-                            checkElement++
-                        }
-                    } else {
-                        prettyConsole(chalk.red(`Profile ${profile} Fetch Back Button Show So Take Long Time, Switch To Next Account`))
-                        await browser.close()
-                        elementFound = 'error'
-                        continue mainLoop
-                    }
-                } while (elementFound === false)
+                await checkElement(varElement, 'Click Back')
 
                 await sleep(3000)
 
@@ -808,40 +514,27 @@ async function main() {
                 // Claim $HOT🔥
                 const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                 do {
-                    if (reClaim <= 3) {
-                        elementFound = false
+                    if (reClaim <= 5) {
 
                         // Click Claim
-                        do {
-                            if (checkElement <= 3) {
-                                try {
-                                    await iframe.waitForSelector(claimSelector);
-                                    await iframe.evaluate((selector) => {
-                                        document.querySelector(selector).click();
-                                    }, claimSelector);
+                        varElement = async () => {
+                            await iframe.waitForSelector(claimSelector);
+                            await iframe.evaluate((selector) => {
+                                document.querySelector(selector).click();
+                            }, claimSelector);
+                        }
 
-                                    elementFound = true
-                                    checkElement = 0
-                                } catch (error) {
-                                    prettyConsole(chalk.yellow('Still Fetch Claim Button'))
-                                    checkElement++
-                                }
-                            } else {
-                                prettyConsole(chalk.red(`Fetch Claim Button Show So Take Long Time, Switch To Next Account`))
-                                await browser.close()
-                                elementFound = 'error'
-                                continue mainLoop
-                            }
-                        } while (elementFound === false)
+                        await checkElement(varElement, 'Click Claim')
 
                         prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT🔥')}`))
 
                         let balanceAfter = 0
+                        let makeSure = false
+                        let tryMakeSure = 0
 
                         // Check Balance After Claim And Reclaim If Not Claimed
-                        elementFound = false
                         do {
-                            if (checkElement <= 10) {
+                            if (tryMakeSure <= 5) {
                                 if (balanceAfter <= balance) {
                                     try {
                                         // Check balance for makesure is claimed
@@ -860,73 +553,44 @@ async function main() {
                                     }
 
 
-                                    checkElement++
+                                    tryMakeSure++
                                 } else {
                                     prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT🔥')} Successfully!`))
                                     prettyConsole(chalk.green(`Balance :${balanceAfter} ${chalk.yellow('$HOT🔥')}`))
-                                    elementFound = true
+                                    makeSure = true
                                     claimed = true
                                 }
                             } else {
                                 // Tweak if not claimed with clicking boost
                                 prettyConsole(chalk.red(`Claiming ${chalk.yellow('$HOT🔥')} So Take Long Time, Tweaking`))
 
-                                let tweak = false
-                                checkElement = 0
-
                                 // Click Gas
-                                do {
-                                    if (checkElement <= 3) {
-                                        try {
-                                            await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
-                                            await iframe.evaluate(() => {
-                                                document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
-                                            });
+                                varElement = async () => {
+                                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
+                                    await iframe.evaluate(() => {
+                                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                                    });
+                                }
 
-                                            tweak = true
-                                            checkElement = 0
-                                        } catch (error) {
-                                            prettyConsole(chalk.yellow('Still Fetch Boost Button'))
-                                            checkElement++
-                                        }
-                                    } else {
-                                        prettyConsole(chalk.red(`Fetch Boost Button Show So Take Long Time, Switch To Next Account`))
-                                        await browser.close()
-                                        elementFound = 'error'
-                                        continue mainLoop
-                                    }
-                                } while (tweak === false)
+                                await checkElement(varElement, 'Click Gas')
 
                                 await sleep(5000)
 
                                 tweak = false
 
                                 // Click Back
-                                do {
-                                    if (checkElement <= 3) {
-                                        try {
-                                            await page.waitForSelector('.btn-icon.popup-close');
-                                            await page.click('.btn-icon.popup-close');
+                                varElement = async () => {
+                                    await page.waitForSelector('.btn-icon.popup-close');
+                                    await page.click('.btn-icon.popup-close');
+                                }
 
-                                            tweak = true
-                                            checkElement = 0
-                                        } catch (error) {
-                                            prettyConsole(chalk.yellow('Still Fetch Back Button'))
-                                            checkElement++
-                                        }
-                                    } else {
-                                        prettyConsole(chalk.red(`Fetch Back Button Show So Take Long Time, Switch To Next Account`))
-                                        await browser.close()
-                                        elementFound = 'error'
-                                        continue mainLoop
-                                    }
-                                } while (tweak === false)
+                                await checkElement(varElement, 'Click Back')
 
                                 prettyConsole(chalk.red(`Try To Re-Claim ${chalk.yellow('$HOT🔥')}`))
                                 reClaim++
-                                elementFound = true
+                                makeSure = true
                             }
-                        } while (elementFound === false)
+                        } while (makeSure === false)
 
                         balance = balanceAfter
                     } else {
@@ -938,35 +602,18 @@ async function main() {
                 prettyConsole(chalk.yellow(`You Can Claim $HOT🔥 If Storage >= ${threshold}% `))
             }
 
-            // Upgrade
-            elementFound = false
-            checkElement = 0
-
             // Click Boost
-            do {
-                if (checkElement <= 3) {
-                    try {
-                        await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
-                        account = await iframe.evaluate(() => {
-                            document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
-                        })
+            varElement = async () => {
+                await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
+                account = await iframe.evaluate(() => {
+                    document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
+                })
+            }
 
-                        elementFound = true
-                        checkElement = 0
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Boost Button'))
-                        checkElement++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Boost Button Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    elementFound = 'error'
-                    return elementFound
-                }
-            } while (elementFound === false)
+            await checkElement(varElement, 'Click Boost')
 
-            await upgradeSpeed(iframe, balance, checkElement, elementFound)
-            await upgradeStorage(iframe, balance, checkElement, elementFound)
+            await upgradeSpeed(iframe, balance, varElement)
+            await upgradeStorage(iframe, balance, varElement)
 
             await browser.close()
 

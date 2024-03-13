@@ -1,7 +1,6 @@
-# Auto Claim Bansos Hot
+# Auto Claim Bansos Hot (UPDATED)
 
     Note: You Can Customize The Code For Your Usage
-    Login.js Still In Development
 
 # Feature : 
  - Schedule Check Storage Every Random Minute On Clock

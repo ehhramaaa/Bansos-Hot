@@ -7,6 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
+const folderPath = 'C:\\Program Files\\OpenVPN\\config';
+const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
+const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -61,40 +65,199 @@ async function ovpnReadConfig(folderPath) {
     }
 }
 
-const userAgent = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.3',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.3',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Agency/93.8.2357.5',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.3',
-    'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.3',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Viewer/99.9.8853.8',
-    'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.3',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Mobile/15E148 Safari/604',
-    'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.3',
-    'Mozilla/5.0 (Linux; U; Android 13; sk-sk; Xiaomi 11T Pro Build/TKQ1.220829.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/112.0.5615.136 Mobile Safari/537.36 XiaoMi/MiuiBrowser/14.4.0-g',
-    'Mozilla/5.0 (Linux; Android 14; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.280 Mobile Safari/537.36 OPR/80.4.4244.7786',
-    'Mozilla/5.0 (Linux; Android 10; SNE-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.280 Mobile Safari/537.36 OPR/80.4.4244.7786',
-    'Mozilla/5.0 (Linux; Android 10; SAMSUNG SM-G980F) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/22.0 Chrome/111.0.5563.116 Mobile Safari/537.3',
-    'Mozilla/5.0 (Linux; Android 14; SAMSUNG SM-S916B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/23.0 Chrome/115.0.0.0 Mobile Safari/537.3',
-    'Mozilla/5.0 (Linux; Android 13; SAMSUNG SM-G980F) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/23.0 Chrome/115.0.0.0 Mobile Safari/537.3',
-    'Mozilla/5.0 (Linux; Android 12; SAMSUNG SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/23.0 Chrome/115.0.0.0 Mobile Safari/537.3',
-    'Mozilla/5.0 (Linux; Android 11; moto e20 Build/RONS31.267-94-14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.64 Mobile Safari/537.3',
-    'Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 OPR/108.0.0.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-]
+async function checkElement(element, message) {
+    let checkElement = false
+    let trycheckElement = 0
+    do {
+        if (trycheckElement <= 5) {
+            try {
+                await element()
+                checkElement = true
+            } catch (error) {
+                prettyConsole(chalk.yellow(`Still Fetch ${message}`))
+                trycheckElement++
+            }
+        } else {
+            prettyConsole(chalk.red(`Profile ${x} ${message} Show So Take Long Time, Switch To Next Account`))
+            return
+        }
+    } while (checkElement === false)
+}
 
-const folderPath = 'C:\\Program Files\\OpenVPN\\config';
-const ovpnPath = '"C:\\Program Files\\OpenVPN\\bin\\openvpn-gui.exe"';
-const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User Data';
+async function main(wallet, x) {
+    let isVpn = false;
+    let isConnected = false;
+    let tryConnectBrowser = 0
+    let vpn, browser, varElement;
+
+    while (!isVpn) {
+        vpn = await checkIp();
+        // Add a condition to check if the VPN connection is established
+        if (vpn !== ip) {
+            isVpn = true;
+            prettyConsole(chalk.green(`VPN connected successfully!, IP : ${vpn}`));
+        }
+
+        // You may want to add a delay here to avoid continuous checking and reduce resource usage
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
+    }
+
+    if (isVpn) {
+        do {
+            if (tryConnectBrowser <= 5) {
+                try {
+                    if (x === 0) {
+                        browser = await puppeteer.launch({
+                            headless: false,
+                            args: [
+                                `--user-data-dir=${chromeUserPath}`,
+                                `--profile-directory=Default`,
+                            ]
+                        });
+                    } else {
+                        browser = await puppeteer.launch({
+                            headless: false,
+                            args: [
+                                `--user-data-dir=${chromeUserPath}`,
+                                `--profile-directory=Profile ${x}`,
+                            ]
+                        });
+                    }
+
+                    const browserConnected = await browser.isConnected()
+
+                    if (browserConnected) {
+                        isConnected = true;
+                    }
+
+                    tryConnectBrowser++
+                } catch (error) {
+                    prettyConsole(chalk.red(error.message))
+                    tryConnectBrowser++
+                }
+            } else {
+                prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
+                return 'Browser Not Connected'
+            }
+        } while (!isConnected)
+
+        await sleep(3000)
+
+        prettyConsole(chalk.green(`Profile :${x}`))
+
+
+        const page = await browser.newPage();
+
+        varElement = async () => {
+            await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
+        }
+
+        await checkElement(varElement, 'Goto Link')
+
+        // Click claim now
+        varElement = async () => {
+            await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+            await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
+        }
+
+        await checkElement(varElement, "Click Claim")
+
+        // Click button launch
+        varElement = async () => {
+            await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+            await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
+        }
+
+        await checkElement(varElement, "Click Launch")
+
+        await sleep(3000)
+
+        const iframeSelector = '.payment-verification';
+        let iframeElementHandle
+
+        varElement = async () => {
+            await page.waitForSelector(iframeSelector)
+            iframeElementHandle = await page.$(iframeSelector);
+        }
+
+        await checkElement(varElement, "Select Iframe")
+
+        await sleep(3000)
+
+        const iframe = await iframeElementHandle.contentFrame();
+
+        await sleep(3000)
+
+        // Click Login
+        varElement = async () => {
+            await iframe.waitForSelector('#root > div > button');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > button').click();
+            })
+        }
+
+        await checkElement(varElement, 'Click Login')
+
+        // Input Wallet
+        varElement = async () => {
+            await iframe.waitForSelector('#root > div > div:nth-child(3) > label > textarea');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div:nth-child(3) > label > textarea').focus();
+            });
+        }
+
+        await checkElement(varElement, "Input Wallet")
+
+        await page.keyboard.type(wallet[x]);
+
+        await sleep(3000)
+
+        // Confirm Wallet
+        varElement = async () => {
+            await iframe.waitForSelector('#root > div > div:nth-child(4) > button');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div:nth-child(4) > button').click();
+            })
+        }
+
+        await checkElement(varElement, "Confirm Wallet")
+
+        // Select Account
+        varElement = async () => {
+            await iframe.waitForSelector('#root > div > button');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > button').click();
+            })
+        }
+
+        await checkElement(varElement, "Select Account")
+        
+        let account
+
+        // Get Account Name
+        varElement = async () => {
+            await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
+            account = await iframe.evaluate(() => {
+                const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
+                return element.textContent
+            })
+        }
+        
+        await checkElement(varElement, "Account Name")
+
+        prettyConsole(chalk.green(`Account :${account}`))
+    }
+}
+
 
 (async () => {
-    prettyConsole(chalk.green('Auto Login bansos'))
+    prettyConsole(chalk.green('Auto Login Bansos Hot'))
+
+
     const ovpnConfig = await ovpnReadConfig(folderPath)
     const wallet = await readTxtFile('./wallet.txt')
 
-    loginloop: for (let x = 0; x < wallet.length; x++) {
+    for (let x = 0; x < wallet.length; x++) {
         exec(`${ovpnPath} --command disconnect_all`);
 
         await sleep(7000)
@@ -105,203 +268,11 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
         exec(`${ovpnPath} --command connect ${ovpnConfig[x]}`);
 
         // Wait for VPN connection to be established
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
-        let isVpn = false;
-        let isConnected = false;
-        let tryConnectBrowser = 0
-        let vpn, browser;
+        const callback = await main(wallet[x], x)
 
-        while (!isVpn) {
-            vpn = await checkIp();
-            // Add a condition to check if the VPN connection is established
-            if (vpn !== ip) {
-                isVpn = true;
-                prettyConsole(chalk.green(`VPN connected successfully!, IP : ${vpn}`));
-            }
-
-            // You may want to add a delay here to avoid continuous checking and reduce resource usage
-            await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay as needed
-        }
-
-        if (isVpn) {
-            do {
-                if (tryConnectBrowser <= 5) {
-                    try {
-                        if (x === 0) {
-                            browser = await puppeteer.launch({
-                                headless: false,
-                                args: [
-                                    `--user-data-dir=${chromeUserPath}`,
-                                    `--profile-directory=Default`,
-                                ]
-                            });
-                        } else {
-                            browser = await puppeteer.launch({
-                                headless: false,
-                                args: [
-                                    `--user-data-dir=${chromeUserPath}`,
-                                    `--profile-directory=Profile ${x}`,
-                                ]
-                            });
-                        }
-
-                        const browserConnected = await browser.isConnected()
-
-                        if (browserConnected) {
-                            isConnected = true;
-                        }
-
-                        tryConnectBrowser++
-                    } catch (error) {
-                        prettyConsole(chalk.red(error.message))
-                        tryConnectBrowser++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Try Hard To Launch Browser!, Switch Next Profile`))
-                    continue loginloop
-                }
-            } while (!isConnected)
-
-            await sleep(3000)
-
-            prettyConsole(chalk.green(`Profile :${x}`))
-
-
-            const page = await browser.newPage();
-
-            await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
-
-            // Click claim now
-            await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-            await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
-
-            // Click button launch
-            await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-            await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
-
-            await sleep(3000)
-
-            let popup = false
-            let tryPopup = 0
-            let iframeElementHandle
-            // Handle iframe
-            do {
-                if (tryPopup <= 5) {
-                    try {
-                        const iframeSelector = '.payment-verification';
-                        await page.waitForSelector(iframeSelector)
-                        iframeElementHandle = await page.$(iframeSelector);
-
-                        popup = true
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Pop Up'))
-                        tryPopup++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Profile ${x} Pop Up Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    continue loginloop
-                }
-            } while (popup === false)
-            
-            await sleep(3000)
-
-            const iframe = await iframeElementHandle.contentFrame();
-
-            await sleep(3000)
-
-            let login = false
-            let tryLogin = 0
-            do {
-                if (tryLogin <= 5) {
-                    try {
-                        // Click Login
-                        await iframe.waitForSelector('#root > div > button');
-                        await iframe.evaluate(() => {
-                            document.querySelector('#root > div > button').click();
-                        })
-
-                        login = true
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Account'))
-                        tryLogin++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Profile ${x} Login Button Show So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    continue loginloop
-                }
-            } while (login === false)
-
-            // Input Wallet
-            await iframe.waitForSelector('#root > div > div:nth-child(3) > label > textarea');
-            await iframe.evaluate(() => {
-                document.querySelector('#root > div > div:nth-child(3) > label > textarea').focus();
-            });
-
-            await page.keyboard.type(wallet[x]);
-
-            await sleep(3000)
-
-            // Confirm Wallet
-            await iframe.waitForSelector('#root > div > div:nth-child(4) > button');
-            await iframe.evaluate(() => {
-                document.querySelector('#root > div > div:nth-child(4) > button').click();
-            })
-
-            let select = false
-            let fetch = 0
-
-            do {
-                if (fetch <= 5) {
-                    try {
-                        // Select Account
-                        await iframe.waitForSelector('#root > div > button');
-                        await iframe.evaluate(() => {
-                            document.querySelector('#root > div > button').click();
-                        })
-
-                        select = true
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Fetch Account'))
-                        fetch++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Profile ${x} Fetching Account So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    continue loginloop
-                }
-            } while (select === false)
-
-            select = false
-            fetch = 0
-            let account
-
-            do {
-                if (fetch <= 5) {
-                    try {
-                        // Get Account Name
-                        await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
-                        account = await iframe.evaluate(() => {
-                            const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
-                            return element.textContent
-                        })
-
-                        select = true
-                    } catch (error) {
-                        prettyConsole(chalk.yellow('Still Import Account'))
-                        fetch++
-                    }
-                } else {
-                    prettyConsole(chalk.red(`Profile ${x} Importing Account So Take Long Time, Switch To Next Account`))
-                    await browser.close()
-                    continue loginloop
-                }
-            } while (select === false)
-
-            prettyConsole(chalk.green(`Account :${account}`))
-
+        if (callback !== 'Browser Not Connected') {
             await browser.close()
 
             exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
@@ -310,5 +281,4 @@ const chromeUserPath = 'C:\\Users\\Admin\\AppData\\Local\\Google\\Chrome\\User D
             await sleep(rest)
         }
     }
-
 })();
