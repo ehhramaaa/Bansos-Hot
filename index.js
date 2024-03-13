@@ -111,12 +111,12 @@ async function checkElement(element, x, message) {
     }
 }
 
-const upgradeSpeed = async (iframe, balance, varElement, x) => {
+const upgradeSpeed = async (iframe, balance, x) => {
     let level
     let price
     let isContinue
     // Check Price Upgrade Speed
-    varElement = async (x) => {
+    const priceUpgrade = async (x) => {
         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
             const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
@@ -124,21 +124,16 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
         })
     }
 
-    isContinue = await checkElement(varElement, x, 'Check Price Upgrade Speed')
+    isContinue = await checkElement(priceUpgrade, x, 'Check Price Upgrade Speed')
 
     if (!isContinue) {
-        await browser.close()
-        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-        const rest = (Math.random() * (30 - 15) + 15) * 1000
-        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-        await sleep(rest)
         return false
     }
 
     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
     // Check Level Speed
-    varElement = async (x) => {
+    const levelSpeed = async (x) => {
         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
             const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
@@ -146,61 +141,46 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
         })
     }
 
-    isContinue = await checkElement(varElement, x, 'Check Level Speed')
+    isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
 
     if (!isContinue) {
-        await browser.close()
-        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-        const rest = (Math.random() * (30 - 15) + 15) * 1000
-        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-        await sleep(rest)
         return false
     }
 
     if (balance >= price) {
         if (!level.includes('5')) {
             // Click For Upgrade
-            varElement = async (x) => {
+            const upgradeClick = async (x) => {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
                 await iframe.evaluate(() => {
                     document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Click For Upgrade')
+            isContinue = await checkElement(upgradeClick, x, 'Click For Upgrade')
 
             if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
                 return false
             }
 
             await sleep(3000)
 
             // Confirm Upgrade
-            varElement = async (x) => {
+            const confirmUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                 await iframe.evaluate(() => {
                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
+            isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
 
             if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
                 return false
             }
 
             // Make Sure Upgraded
-            varElement = async (x) => {
+            const makeSureUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
                 await iframe.evaluate(() => {
                     const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
@@ -208,32 +188,27 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            const upgraded = await checkElement(varElement, x, 'Make Sure Upgrade')
+            const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
 
             if (upgraded) {
                 // Click Got it
-                varElement = async (x) => {
+                const gotIt = async (x) => {
                     await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                     account = await iframe.evaluate(() => {
                         document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                     })
                 }
 
-                isContinue = await checkElement(varElement, x, 'Click Got it')
+                isContinue = await checkElement(gotIt, x, 'Click Got it')
 
                 if (!isContinue) {
-                    await browser.close()
-                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                    const rest = (Math.random() * (30 - 15) + 15) * 1000
-                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                    await sleep(rest)
                     return false
                 }
 
                 await sleep(3000)
 
                 // Check Level Speed
-                varElement = async (x) => {
+                const levelSpeed = async (x) => {
                     await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
                     level = await iframe.evaluate(() => {
                         const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
@@ -241,14 +216,9 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
                     })
                 }
 
-                isContinue = await checkElement(varElement, x, 'Check Level Speed')
+                isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
 
                 if (!isContinue) {
-                    await browser.close()
-                    exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                    const rest = (Math.random() * (30 - 15) + 15) * 1000
-                    prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                    await sleep(rest)
                     return false
                 }
 
@@ -266,13 +236,13 @@ const upgradeSpeed = async (iframe, balance, varElement, x) => {
     }
 }
 
-const upgradeStorage = async (iframe, balance, varElement, x) => {
+const upgradeStorage = async (iframe, balance, x) => {
     let level
     let price
     let isContinue
 
     // Check Price Upgrade Storage
-    varElement = async (x) => {
+    const checkPrice = async (x) => {
         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
             const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
@@ -280,21 +250,16 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
         })
     }
 
-    isContinue = await checkElement(varElement, x, 'Check Price Upgrade Storage')
+    isContinue = await checkElement(checkPrice, x, 'Check Price Upgrade Storage')
 
     if (!isContinue) {
-        await browser.close()
-        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-        const rest = (Math.random() * (30 - 15) + 15) * 1000
-        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-        await sleep(rest)
         return false
     }
 
     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
 
     // Check Level Storage
-    varElement = async (x) => {
+    const checkLevel = async (x) => {
         await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
             const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
@@ -302,61 +267,46 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
         })
     }
 
-    isContinue = await checkElement(varElement, x, 'Check Level Storage')
+    isContinue = await checkElement(checkLevel, x, 'Check Level Storage')
 
     if (!isContinue) {
-        await browser.close()
-        exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-        const rest = (Math.random() * (30 - 15) + 15) * 1000
-        prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-        await sleep(rest)
         return false
     }
 
     if (balance >= price) {
         if (!level.includes('5')) {
             // Click For Upgrade
-            varElement = async (x) => {
+            const clickUpgrade = async (x) => {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
                 account = await iframe.evaluate(() => {
                     document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Click For Upgrade')
+            isContinue = await checkElement(clickUpgrade, x, 'Click For Upgrade')
 
             if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
                 return false
             }
 
             await sleep(3000)
 
             // Confirm Upgrade
-            varElement = async (x) => {
+            const confirmUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                 account = await iframe.evaluate(() => {
                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Confirm Upgrade')
+            isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
 
             if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
                 return false
             }
 
             // Make Sure Upgraded
-            varElement = async (x) => {
+            const makeSureUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
                 await iframe.evaluate(() => {
                     const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
@@ -364,18 +314,24 @@ const upgradeStorage = async (iframe, balance, varElement, x) => {
                 })
             }
 
-            const upgraded = await checkElement(varElement, x, 'Make Sure Upgraded')
-
+            const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
+            
             await sleep(3000)
-
+            
             if (upgraded) {
                 // Check Level Storage
-                varElement = async (x) => {
+                const checkLevel = async (x) => {
                     await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
                     level = await iframe.evaluate(() => {
                         const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
                         return element.textContent
                     })
+                }
+                
+                const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
+
+                if (!isContinue) {
+                    return false
                 }
 
                 prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
@@ -410,7 +366,7 @@ async function main() {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         let isVpn = false;
-        let vpn, browser, varElement, isContinue
+        let vpn, browser, isContinue
 
         while (!isVpn) {
             vpn = await checkIp();
@@ -426,7 +382,7 @@ async function main() {
 
         if (isVpn) {
             // Connect Browser
-            varElement = async (x) => {
+            const connectBrowser = async (x) => {
                 let launchOptions = {
                     headless: true,
                     args: [
@@ -442,7 +398,7 @@ async function main() {
                 return browser
             }
 
-            isContinue = await checkElement(varElement, x, 'Connecting Browser')
+            isContinue = await checkElement(connectBrowser, x, 'Connecting Browser')
 
             if (!isContinue) {
                 exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
@@ -460,11 +416,11 @@ async function main() {
             await page.setDefaultNavigationTimeout(0);
 
             // Goto Link
-            varElement = async (x) => {
+            const gotoLink = async (x) => {
                 await page.goto('https://web.telegram.org/k/#@herewalletbot', { waitUntil: ['networkidle2', 'domcontentloaded'] });
             }
 
-            isContinue = await checkElement(varElement, x, 'Goto Link')
+            isContinue = await checkElement(gotoLink, x, 'Goto Link')
 
             if (!isContinue) {
                 await browser.close()
@@ -476,12 +432,12 @@ async function main() {
             }
 
             // Click Claim Now
-            varElement = async (x) => {
+            const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
                 await page.click('a.anchor-url[href="https://t.me/herewalletbot/app"]')
             }
 
-            isContinue = await checkElement(varElement, x, 'Click Claim Now')
+            isContinue = await checkElement(claimNow, x, 'Click Claim Now')
 
             if (!isContinue) {
                 await browser.close()
@@ -493,12 +449,12 @@ async function main() {
             }
 
             // Click Button Launch
-            varElement = async (x) => {
+            const buttonLaunch = async (x) => {
                 await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
                 await page.click('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
             }
 
-            isContinue = await checkElement(varElement, x, 'Click Button Launch')
+            isContinue = await checkElement(buttonLaunch, x, 'Click Button Launch')
 
             if (!isContinue) {
                 await browser.close()
@@ -514,12 +470,12 @@ async function main() {
             // Handle iframe
             const iframeSelector = '.payment-verification';
             let iframeElementHandle
-            varElement = async (x) => {
+            const handleFrame = async (x) => {
                 await page.waitForSelector(iframeSelector)
                 iframeElementHandle = await page.$(iframeSelector);
             }
 
-            isContinue = await checkElement(varElement, x, 'Handle iframe')
+            isContinue = await checkElement(handleFrame, x, 'Handle iframe')
 
             if (!isContinue) {
                 await browser.close()
@@ -537,7 +493,7 @@ async function main() {
             let account
 
             // Get Account Name
-            varElement = async (x) => {
+            const getAccountName = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
                 account = await iframe.evaluate(() => {
                     const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
@@ -545,7 +501,7 @@ async function main() {
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Get Account Name')
+            isContinue = await checkElement(getAccountName, x, 'Get Account Name')
 
             if (!isContinue) {
                 await browser.close()
@@ -561,7 +517,7 @@ async function main() {
             let near
 
             // Get Near Balance
-            varElement = async (x) => {
+            const nearBalance = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
                     const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
@@ -569,7 +525,7 @@ async function main() {
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Get Near Balance')
+            isContinue = await checkElement(nearBalance, x, 'Get Near Balance')
 
             if (!isContinue) {
                 prettyConsole(chalk.green(`Are You Have UWON? If U Have, Chage Selector At Line 565 And 566`))
@@ -583,7 +539,7 @@ async function main() {
             await sleep(5000)
 
             // Check Storage
-            varElement = async (x) => {
+            const checkStorage = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                 storage = await iframe.evaluate(() => {
                     const element = document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
@@ -592,7 +548,7 @@ async function main() {
                 });
             }
 
-            isContinue = await checkElement(varElement, x, 'Check Storage')
+            isContinue = await checkElement(checkStorage, x, 'Check Storage')
 
             if (!isContinue) {
                 await browser.close()
@@ -606,14 +562,14 @@ async function main() {
             prettyConsole(chalk.green(`Storage :${storage}%`))
 
             // Click Storage
-            varElement = async (x) => {
+            const clickStorage = async (x) => {
                 await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
                 await iframe.evaluate(() => {
                     document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
                 });
             }
 
-            isContinue = await checkElement(varElement, x, 'Click Storage')
+            isContinue = await checkElement(clickStorage, x, 'Click Storage')
 
             if (!isContinue) {
                 await browser.close()
@@ -627,7 +583,7 @@ async function main() {
             let balance
 
             // Check Balance
-            varElement = async (x) => {
+            const checkBalance = async (x) => {
                 await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
                 balance = await iframe.evaluate(() => {
                     const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
@@ -635,7 +591,7 @@ async function main() {
                 });
             }
 
-            isContinue = await checkElement(varElement, x, 'Check Balance')
+            isContinue = await checkElement(checkBalance, x, 'Check Balance')
 
             if (!isContinue) {
                 await browser.close()
@@ -650,14 +606,14 @@ async function main() {
 
             if (storage >= threshold) {
                 // Click Gas
-                varElement = async (x) => {
+                const clickGas = async (x) => {
                     await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
                     await iframe.evaluate(() => {
                         document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
                     });
                 }
 
-                isContinue = await checkElement(varElement, x, 'Click Gas')
+                isContinue = await checkElement(clickGas, x, 'Click Gas')
 
                 if (!isContinue) {
                     await browser.close()
@@ -669,14 +625,14 @@ async function main() {
                 }
 
                 // Click Tab Gas
-                varElement = async (x) => {
+                const tabGas = async (x) => {
                     await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)');
                     await iframe.evaluate(() => {
                         document.querySelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)').click();
                     });
                 }
 
-                isContinue = await checkElement(varElement, x, 'Click Tab Gas')
+                isContinue = await checkElement(tabGas, x, 'Click Tab Gas')
 
                 if (!isContinue) {
                     await browser.close()
@@ -693,7 +649,7 @@ async function main() {
                 let gasFree
 
                 // Check Gas Free Amount
-                varElement = async (x) => {
+                const checkGas = async (x) => {
                     await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
                     gasFree = await iframe.evaluate(() => {
                         const element = document.querySelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
@@ -701,7 +657,7 @@ async function main() {
                     });
                 }
 
-                isContinue = await checkElement(varElement, x, 'Check Gas Free Amount')
+                isContinue = await checkElement(checkGas, x, 'Check Gas Free Amount')
 
                 if (!isContinue) {
                     await browser.close()
@@ -715,12 +671,12 @@ async function main() {
                 prettyConsole(chalk.green(`Gas Free :${gasFree}`))
 
                 // Click Back
-                varElement = async (x) => {
+                const clickBack = async (x) => {
                     await page.waitForSelector('.popup-close');
                     await page.click('.popup-close');
                 }
 
-                isContinue = await checkElement(varElement, x, 'Click Back')
+                isContinue = await checkElement(clickBack, x, 'Click Back')
 
                 if (!isContinue) {
                     await browser.close()
@@ -732,14 +688,14 @@ async function main() {
                 }
 
                 // Click Storage
-                varElement = async (x) => {
+                const clickStorage = async (x) => {
                     await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
                     await iframe.evaluate(() => {
                         document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
                     });
                 }
 
-                isContinue = await checkElement(varElement, x, 'Click Storage')
+                isContinue = await checkElement(clickStorage, x, 'Click Storage')
 
                 if (!isContinue) {
                     await browser.close()
@@ -759,7 +715,7 @@ async function main() {
                 do {
                     if (reClaim <= 5) {
                         // Click Claim
-                        varElement = async (x) => {
+                        const clickClaim = async (x) => {
                             const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                             await iframe.waitForSelector(claimSelector);
                             await iframe.evaluate((selector) => {
@@ -767,7 +723,7 @@ async function main() {
                             }, claimSelector);
                         }
 
-                        isContinue = await checkElement(varElement, x, 'Click Claim')
+                        isContinue = await checkElement(clickClaim, x, 'Click Claim')
 
                         if (!isContinue) {
                             await browser.close()
@@ -817,14 +773,14 @@ async function main() {
                                 prettyConsole(chalk.red(`Claiming ${chalk.yellow('$HOT🔥')} So Take Long Time, Tweaking`))
 
                                 // Click Boost
-                                varElement = async (x) => {
+                                const clickBoost = async (x) => {
                                     await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
                                     account = await iframe.evaluate(() => {
                                         document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
                                     })
                                 }
 
-                                isContinue = await checkElement(varElement, x, 'Click Boost')
+                                isContinue = await checkElement(clickBoost, x, 'Click Boost')
 
                                 if (!isContinue) {
                                     await browser.close()
@@ -840,12 +796,12 @@ async function main() {
                                 tweak = false
 
                                 // Click Back
-                                varElement = async (x) => {
+                                const clickBack = async (x) => {
                                     await page.waitForSelector('.btn-icon.popup-close');
                                     await page.click('.btn-icon.popup-close');
                                 }
 
-                                isContinue = await checkElement(varElement, x, 'Click Back')
+                                isContinue = await checkElement(clickBack, x, 'Click Back')
 
                                 if (!isContinue) {
                                     await browser.close()
@@ -873,14 +829,14 @@ async function main() {
             }
 
             // Click Boost
-            varElement = async (x) => {
+            const clickBoost = async (x) => {
                 await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
                 account = await iframe.evaluate(() => {
                     document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
                 })
             }
 
-            isContinue = await checkElement(varElement, x, 'Click Boost')
+            isContinue = await checkElement(clickBoost, x, 'Click Boost')
 
             if (!isContinue) {
                 await browser.close()
@@ -891,7 +847,7 @@ async function main() {
                 continue mainLoop
             }
 
-            isContinue = await upgradeSpeed(iframe, balance, varElement, x)
+            isContinue = await upgradeSpeed(iframe, balance, x)
 
             if (!isContinue) {
                 exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
@@ -901,7 +857,7 @@ async function main() {
                 continue mainLoop
             }
 
-            // isContinue = await upgradeStorage(iframe, balance, varElement, x)
+            // isContinue = await upgradeStorage(iframe, balance, x)
 
             // if(!isContinue){
             //     continue mainLoop
