@@ -315,9 +315,9 @@ const upgradeStorage = async (iframe, balance, x) => {
             }
 
             const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
-            
+
             await sleep(3000)
-            
+
             if (upgraded) {
                 // Check Level Storage
                 const checkLevel = async (x) => {
@@ -327,7 +327,7 @@ const upgradeStorage = async (iframe, balance, x) => {
                         return element.textContent
                     })
                 }
-                
+
                 const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
 
                 if (!isContinue) {
@@ -383,13 +383,24 @@ async function main() {
         if (isVpn) {
             // Connect Browser
             const connectBrowser = async (x) => {
-                let launchOptions = {
-                    headless: true,
-                    args: [
-                        `--user-data-dir=${chromeUserPath}`,
-                        x === 0 ? '--profile-directory=Default' : `--profile-directory=Profile ${x}`
-                    ]
-                };
+                let launchOptions
+                if (x === 0) {
+                    launchOptions = {
+                        headless: true,
+                        args: [
+                            `--user-data-dir=${chromeUserPath}`,
+                            '--profile-directory=Default'
+                        ]
+                    };
+                } else {
+                    launchOptions = {
+                        headless: true,
+                        args: [
+                            `--user-data-dir=${chromeUserPath}`,
+                            `--profile-directory=Profile ${x}`
+                        ]
+                    };
+                }
 
                 browser = await puppeteer.launch(launchOptions);
 
@@ -432,7 +443,7 @@ async function main() {
             }
 
             await sleep(3000)
-            
+
             // Click Claim Now
             const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
@@ -451,7 +462,7 @@ async function main() {
             }
 
             await sleep(3000)
-            
+
             // Click Button Launch
             const buttonLaunch = async (x) => {
                 await page.waitForSelector('body > div.popup.popup-peer.popup-confirmation.active > div > div.popup-buttons > button:nth-child(1)')
