@@ -3,11 +3,11 @@
     Note: You Can Customize The Code For Your Usage
 
 # Feature : 
- - Show Near Balance
+ <!-- - Show Near Balance -->
  - Show Gas Free
  - Show Hot Balance
- - Show Level Speed
- - Show Level Storage 
+ - Upgrade Level Speed Max Level 4
+ <!-- - Show Level Storage  -->
  - Schedule Check Storage Every Random Minute On Clock
  - Check Current Ip And Connected Ip (If Use Vpn)
  - Check Gas Free For Claim

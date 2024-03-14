@@ -517,24 +517,24 @@ async function main() {
 
             prettyConsole(chalk.green(`Account :${account}`))
 
-            let near
+            // let near
 
             // Get Near Balance
-            const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-                near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-                    return element.textContent
-                })
-            }
+            // const nearBalance = async (x) => {
+            //     await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+            //     near = await iframe.evaluate(() => {
+            //         const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+            //         return element.textContent
+            //     })
+            // }
 
-            isContinue = await checkElement(nearBalance, x, 'Get Near Balance')
+            // isContinue = await checkElement(nearBalance, x, 'Get Near Balance')
 
-            if (!isContinue) {
-                prettyConsole(chalk.green(`Are You Have UWON? If U Have, Chage Selector At Line 565 And 566`))
-            }
+            // if (!isContinue) {
+            //     prettyConsole(chalk.green(`Are You Have UWON? If U Have, Chage Selector At Line 565 And 566`))
+            // }
 
-            prettyConsole(chalk.green(`Near Balance :${near}`))
+            // prettyConsole(chalk.green(`Near Balance :${near}`))
 
             let storage = 0
             const threshold = 93;
