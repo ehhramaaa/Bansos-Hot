@@ -138,7 +138,7 @@ const upgradeSpeed = async (iframe, balance, x) => {
     }
 
     if (balance >= price) {
-        if (!level.includes('5')) {
+        if (!level.includes('4')) {
             // Click For Upgrade
             const upgradeClick = async (x) => {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
@@ -158,6 +158,7 @@ const upgradeSpeed = async (iframe, balance, x) => {
             // Confirm Upgrade
             const confirmUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                await sleep(3000)
                 await iframe.evaluate(() => {
                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                 })
@@ -172,10 +173,6 @@ const upgradeSpeed = async (iframe, balance, x) => {
             // Make Sure Upgraded
             const makeSureUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                await iframe.evaluate(() => {
-                    const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                    return element.textContent
-                })
             }
 
             const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
@@ -524,9 +521,9 @@ async function main() {
 
             // Get Near Balance
             const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.sc-cMdePl.cDBmgc > div > div:nth-child(2) > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                     return element.textContent
                 })
             }
