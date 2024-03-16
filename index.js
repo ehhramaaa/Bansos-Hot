@@ -181,7 +181,8 @@ const upgradeSpeed = async (iframe, balance, x) => {
                 // Click Got it
                 const gotIt = async (x) => {
                     await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                    account = await iframe.evaluate(() => {
+                    await sleep(3000)
+                    await iframe.evaluate(() => {
                         document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                     })
                 }
@@ -281,7 +282,8 @@ const upgradeStorage = async (iframe, balance, x) => {
             // Confirm Upgrade
             const confirmUpgrade = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                account = await iframe.evaluate(() => {
+                await sleep(3000)
+                await iframe.evaluate(() => {
                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
                 })
             }
