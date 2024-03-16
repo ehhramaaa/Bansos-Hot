@@ -7,13 +7,10 @@
  - Show Gas Free
  - Show Hot Balance
  - Upgrade Level Speed Max Level 4
- <!-- - Show Level Storage  -->
+ - Upgrade Level Storage Max Level 4
  - Schedule Check Storage Every Random Minute On Clock
  - Check Current Ip And Connected Ip (If Use Vpn)
  - Check Gas Free For Claim
- - Auto Upgrade Speed
- - Auto Upgrade Storage (If U Can Use U Can Active With Remove Quote In Line 622)
- - Only Claiming If Level Storage And Level Speed Already 5
 
 # Requirement : 
  - Node.js, Chrome, OpenVpn (If Not Use Can Modify Code)
