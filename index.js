@@ -137,8 +137,8 @@ const upgradeSpeed = async (iframe, balance, x) => {
         return false
     }
 
-    if (balance >= price) {
-        if (!level.includes('4')) {
+    if (balance >= (price * 2)) {
+        if (!level.includes('5')) {
             // Click For Upgrade
             const upgradeClick = async (x) => {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
@@ -261,8 +261,8 @@ const upgradeStorage = async (iframe, balance, x) => {
         return false
     }
 
-    if (balance >= price) {
-        if (!level.includes('4')) {
+    if (balance >= (price * 2)) {
+        if (!level.includes('5')) {
             // Click For Upgrade
             const clickUpgrade = async (x) => {
                 await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
