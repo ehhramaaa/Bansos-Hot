@@ -107,9 +107,9 @@ const upgradeSpeed = async (iframe, balance, x) => {
     let isContinue
     // Check Price Upgrade Speed
     const priceUpgrade = async (x) => {
-        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
             return parseFloat(element.textContent)
         })
     }
@@ -124,9 +124,9 @@ const upgradeSpeed = async (iframe, balance, x) => {
 
     // Check Level Speed
     const levelSpeed = async (x) => {
-        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
             return element.textContent
         })
     }
@@ -138,25 +138,48 @@ const upgradeSpeed = async (iframe, balance, x) => {
     }
 
     if (balance >= (price * 2)) {
-        if (!level.includes('5')) {
-            // Click For Upgrade
-            const upgradeClick = async (x) => {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
-                await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
-                })
-            }
 
-            isContinue = await checkElement(upgradeClick, x, 'Click For Upgrade')
+        // Click For Upgrade
+        const upgradeClick = async (x) => {
+            await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
+            })
+        }
 
-            if (!isContinue) {
-                return false
-            }
+        isContinue = await checkElement(upgradeClick, x, 'Click For Upgrade')
 
+        if (!isContinue) {
+            return false
+        }
+
+        await sleep(3000)
+
+        // Confirm Upgrade
+        const confirmUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
             await sleep(3000)
+            await iframe.evaluate(() => {
+                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+            })
+        }
 
-            // Confirm Upgrade
-            const confirmUpgrade = async (x) => {
+        isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
+
+        if (!isContinue) {
+            return false
+        }
+
+        // Make Sure Upgraded
+        const makeSureUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+        }
+
+        const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
+
+        if (upgraded) {
+            // Click Got it
+            const gotIt = async (x) => {
                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
                 await sleep(3000)
                 await iframe.evaluate(() => {
@@ -164,63 +187,29 @@ const upgradeSpeed = async (iframe, balance, x) => {
                 })
             }
 
-            isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
+            isContinue = await checkElement(gotIt, x, 'Click Got it')
 
             if (!isContinue) {
                 return false
             }
 
-            // Make Sure Upgraded
-            const makeSureUpgrade = async (x) => {
-                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+            await sleep(3000)
+
+            // Check Level Speed
+            isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
+
+            if (!isContinue) {
+                return false
             }
 
-            const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
+            prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
 
-            if (upgraded) {
-                // Click Got it
-                const gotIt = async (x) => {
-                    await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                    await sleep(3000)
-                    await iframe.evaluate(() => {
-                        document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                    })
-                }
-
-                isContinue = await checkElement(gotIt, x, 'Click Got it')
-
-                if (!isContinue) {
-                    return false
-                }
-
-                await sleep(3000)
-
-                // Check Level Speed
-                const levelSpeed = async (x) => {
-                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                    level = await iframe.evaluate(() => {
-                        const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-                        return element.textContent
-                    })
-                }
-
-                isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
-
-                if (!isContinue) {
-                    return false
-                }
-
-                prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
-
-                balance = balance - price
-            } else {
-                prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
-            }
+            balance = balance - price
         } else {
-            prettyConsole(chalk.yellow(`Your Level Is 5, Only Claiming Not Upgrading`))
+            prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
         }
     } else {
-        prettyConsole(chalk.yellow(`Balance $HOT🔥 Not Enough For Upgrade Speed`))
+        prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Speed`))
     }
 }
 
@@ -231,9 +220,9 @@ const upgradeStorage = async (iframe, balance, x) => {
 
     // Check Price Upgrade Storage
     const checkPrice = async (x) => {
-        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
             return parseFloat(element.textContent)
         })
     }
@@ -248,9 +237,9 @@ const upgradeStorage = async (iframe, balance, x) => {
 
     // Check Level Storage
     const checkLevel = async (x) => {
-        await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
             return element.textContent
         })
     }
@@ -262,76 +251,64 @@ const upgradeStorage = async (iframe, balance, x) => {
     }
 
     if (balance >= (price * 2)) {
-        if (!level.includes('5')) {
-            // Click For Upgrade
-            const clickUpgrade = async (x) => {
-                await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
-                account = await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
-                })
-            }
+        // Click For Upgrade
+        const clickUpgrade = async (x) => {
+            await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
+            account = await iframe.evaluate(() => {
+                document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
+            })
+        }
 
-            isContinue = await checkElement(clickUpgrade, x, 'Click For Upgrade')
+        isContinue = await checkElement(clickUpgrade, x, 'Click For Upgrade')
+
+        if (!isContinue) {
+            return false
+        }
+
+        await sleep(3000)
+
+        // Confirm Upgrade
+        const confirmUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+            await sleep(3000)
+            await iframe.evaluate(() => {
+                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+            })
+        }
+
+        isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
+
+        if (!isContinue) {
+            return false
+        }
+
+        // Make Sure Upgraded
+        const makeSureUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+            await iframe.evaluate(() => {
+                const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                return element.textContent
+            })
+        }
+
+        const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
+
+        await sleep(3000)
+
+        if (upgraded) {
+            // Check Level Storage
+            const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
 
             if (!isContinue) {
                 return false
             }
 
-            await sleep(3000)
-
-            // Confirm Upgrade
-            const confirmUpgrade = async (x) => {
-                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-                await sleep(3000)
-                await iframe.evaluate(() => {
-                    document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-                })
-            }
-
-            isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
-
-            if (!isContinue) {
-                return false
-            }
-
-            // Make Sure Upgraded
-            const makeSureUpgrade = async (x) => {
-                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                await iframe.evaluate(() => {
-                    const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-                    return element.textContent
-                })
-            }
-
-            const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
-
-            await sleep(3000)
-
-            if (upgraded) {
-                // Check Level Storage
-                const checkLevel = async (x) => {
-                    await iframe.waitForSelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                    level = await iframe.evaluate(() => {
-                        const element = document.querySelector('#root > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-                        return element.textContent
-                    })
-                }
-
-                const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
-
-                if (!isContinue) {
-                    return false
-                }
-
-                prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
-            } else {
-                prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
-            }
+            prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
         } else {
-            prettyConsole(chalk.yellow(`Your Level Is 5, Only Claiming Not Upgrading`))
+            prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
         }
     } else {
-        prettyConsole(chalk.yellow(`Balance $HOT🔥 Not Enough For Upgrade Storage`))
+        prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Storage`))
     }
 }
 
@@ -409,7 +386,7 @@ async function main() {
 
             await sleep(3000)
 
-            prettyConsole(chalk.green(`Profile :${x}`))
+            prettyConsole(chalk.green(`Profile\t:${x}`))
 
             const page = await browser.newPage();
             await page.setDefaultNavigationTimeout(0);
@@ -431,7 +408,7 @@ async function main() {
             }
 
             await sleep(3000)
-            
+
             // Click Claim Now
             const claimNow = async (x) => {
                 await page.waitForSelector('a.anchor-url[href="https://t.me/herewalletbot/app"]')
@@ -499,9 +476,9 @@ async function main() {
 
             // Get Account Name
             const getAccountName = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(1) > p');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(1) > p');
                 account = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(1) > p');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(1) > p');
                     return element.textContent
                 })
             }
@@ -517,26 +494,46 @@ async function main() {
                 continue mainLoop
             }
 
-            prettyConsole(chalk.green(`Account :${account}`))
+            prettyConsole(chalk.green(`Account\t:${account}`))
 
-            // let near
+            let near
 
             // Get Near Balance
-            // const nearBalance = async (x) => {
-            //     await iframe.waitForSelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-            //     near = await iframe.evaluate(() => {
-            //         const element = document.querySelector('#root > div > div > div > div:nth-child(6) > div.nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-            //         return element.textContent
-            //     })
-            // }
+            const nearBalance = async (x) => {
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div.sc-iqzjCX.dBoGob > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                near = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div.sc-iqzjCX.dBoGob > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                    return element.textContent
+                })
+            }
 
-            // isContinue = await checkElement(nearBalance, x, 'Get Near Balance')
+            await checkElement(nearBalance, x, 'Get Near Balance')
 
-            // if (!isContinue) {
-            //     prettyConsole(chalk.green(`Are You Have UWON? If U Have, Chage Selector At Line 565 And 566`))
-            // }
+            prettyConsole(chalk.green(`Near Balance\t:${near}`))
 
-            // prettyConsole(chalk.green(`Near Balance :${near}`))
+            let balance
+
+            // Check Balance
+            const checkBalance = async (x) => {
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
+                balance = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
+                    return parseFloat(element.textContent)
+                });
+            }
+
+            isContinue = await checkElement(checkBalance, x, 'Check Balance')
+
+            if (!isContinue) {
+                await browser.close()
+                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+                const rest = (Math.random() * (30 - 15) + 15) * 1000
+                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+                await sleep(rest)
+                continue mainLoop
+            }
+
+            prettyConsole(chalk.green(`Balance\t:${balance} ${chalk.yellow('$HOT🔥')}`))
 
             let storage = 0
             const threshold = 93;
@@ -545,9 +542,9 @@ async function main() {
 
             // Check Storage
             const checkStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1)');
                 storage = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1)');
                     const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
                     return Math.floor(parseFloat(height[0]))
                 });
@@ -564,13 +561,13 @@ async function main() {
                 continue mainLoop
             }
 
-            prettyConsole(chalk.green(`Storage :${storage}%`))
+            prettyConsole(chalk.green(`Storage\t:${storage}%`))
 
             // Click Storage
             const clickStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)');
                 await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
+                    document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
                 });
             }
 
@@ -585,36 +582,12 @@ async function main() {
                 continue mainLoop
             }
 
-            let balance
-
-            // Check Balance
-            const checkBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                balance = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
-                    return parseFloat(element.textContent)
-                });
-            }
-
-            isContinue = await checkElement(checkBalance, x, 'Check Balance')
-
-            if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
-            }
-
-            prettyConsole(chalk.green(`Balance :${balance} ${chalk.yellow('$HOT🔥')}`))
-
             if (storage >= threshold) {
                 // Click Gas
                 const clickGas = async (x) => {
-                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
+                    await iframe.waitForSelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)');
                     await iframe.evaluate(() => {
-                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
+                        document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1)').click();
                     });
                 }
 
@@ -631,9 +604,9 @@ async function main() {
 
                 // Click Tab Gas
                 const tabGas = async (x) => {
-                    await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)');
+                    await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)');
                     await iframe.evaluate(() => {
-                        document.querySelector('#root > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)').click();
+                        document.querySelector('#root > div > div > div:nth-child(4) > div:nth-child(1) > div > div:nth-child(3)').click();
                     });
                 }
 
@@ -655,9 +628,9 @@ async function main() {
 
                 // Check Gas Free Amount
                 const checkGas = async (x) => {
-                    await iframe.waitForSelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
+                    await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
                     gasFree = await iframe.evaluate(() => {
-                        const element = document.querySelector('#root > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
+                        const element = document.querySelector('#root > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > h3');
                         return parseFloat(element.textContent)
                     });
                 }
@@ -673,7 +646,7 @@ async function main() {
                     continue mainLoop
                 }
 
-                prettyConsole(chalk.green(`Gas Free :${gasFree}`))
+                prettyConsole(chalk.green(`Gas Free\t:${gasFree}`))
 
                 // Click Back
                 const clickBack = async (x) => {
@@ -693,13 +666,6 @@ async function main() {
                 }
 
                 // Click Storage
-                const clickStorage = async (x) => {
-                    await iframe.waitForSelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)');
-                    await iframe.evaluate(() => {
-                        document.querySelector('#root > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
-                    });
-                }
-
                 isContinue = await checkElement(clickStorage, x, 'Click Storage')
 
                 if (!isContinue) {
@@ -721,7 +687,7 @@ async function main() {
                     if (reClaim <= 5) {
                         // Click Claim
                         const clickClaim = async (x) => {
-                            const claimSelector = '#root > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
+                            const claimSelector = '#root > div > div > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) > button'
                             await iframe.waitForSelector(claimSelector);
                             await iframe.evaluate((selector) => {
                                 document.querySelector(selector).click();
@@ -752,14 +718,14 @@ async function main() {
                                     try {
                                         // Check balance for makesure is claimed
                                         balanceAfter = await iframe.evaluate(() => {
-                                            const element = document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
+                                            const element = document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) > p:nth-child(3)');
                                             return parseFloat(element.textContent);
                                         });
                                     } catch (error) {
                                         prettyConsole(chalk.red(error.message))
                                     }
 
-                                    await sleep(15000)
+                                    await sleep(5000)
 
                                     if (checkElement === 5) {
                                         prettyConsole(chalk.yellow(`Still Claiming ${chalk.yellow('$HOT🔥')}`))
@@ -779,9 +745,9 @@ async function main() {
 
                                 // Click Boost
                                 const clickBoost = async (x) => {
-                                    await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
+                                    await iframe.waitForSelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
                                     account = await iframe.evaluate(() => {
-                                        document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
+                                        document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
                                     })
                                 }
 
@@ -835,9 +801,9 @@ async function main() {
 
             // Click Boost
             const clickBoost = async (x) => {
-                await iframe.waitForSelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
+                await iframe.waitForSelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
                 account = await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
+                    document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
                 })
             }
 
