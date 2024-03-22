@@ -107,9 +107,9 @@ const upgradeSpeed = async (iframe, balance, x) => {
     let isContinue
     // Check Price Upgrade Speed
     const priceUpgrade = async (x) => {
-        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
             return parseFloat(element.textContent)
         })
     }
@@ -124,9 +124,9 @@ const upgradeSpeed = async (iframe, balance, x) => {
 
     // Check Level Speed
     const levelSpeed = async (x) => {
-        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
             return element.textContent
         })
     }
@@ -141,9 +141,9 @@ const upgradeSpeed = async (iframe, balance, x) => {
 
         // Click For Upgrade
         const upgradeClick = async (x) => {
-            await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)');
+            await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)');
             await iframe.evaluate(() => {
-                document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(3) > div:nth-child(1)').click();
+                document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)').click();
             })
         }
 
@@ -220,9 +220,9 @@ const upgradeStorage = async (iframe, balance, x) => {
 
     // Check Price Upgrade Storage
     const checkPrice = async (x) => {
-        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
         price = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:first-of-type');
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
             return parseFloat(element.textContent)
         })
     }
@@ -237,9 +237,9 @@ const upgradeStorage = async (iframe, balance, x) => {
 
     // Check Level Storage
     const checkLevel = async (x) => {
-        await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
         level = await iframe.evaluate(() => {
-            const element = document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
             return element.textContent
         })
     }
@@ -253,9 +253,9 @@ const upgradeStorage = async (iframe, balance, x) => {
     if (balance >= (price * 2)) {
         // Click For Upgrade
         const clickUpgrade = async (x) => {
-            await iframe.waitForSelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div');
+            await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div');
             account = await iframe.evaluate(() => {
-                document.querySelector('#root > div > div > div.sc-fHekdT.bVCZSw > div > div:nth-child(2) > div').click();
+                document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div').click();
             })
         }
 
@@ -500,9 +500,9 @@ async function main() {
 
             // Get Near Balance
             const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div.sc-iqzjCX.dBoGob > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div.sc-iqzjCX.dBoGob > div > div:nth-child(2) > p.sc-gLLvby.fbVioN');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                     return element.textContent
                 })
             }
@@ -542,9 +542,9 @@ async function main() {
 
             // Check Storage
             const checkStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                 storage = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1)');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                     const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
                     return Math.floor(parseFloat(height[0]))
                 });
@@ -735,7 +735,7 @@ async function main() {
                                     tryMakeSure++
                                 } else {
                                     prettyConsole(chalk.green(`Claim ${chalk.yellow('$HOT🔥')} Successfully!`))
-                                    prettyConsole(chalk.green(`Balance :${balanceAfter} ${chalk.yellow('$HOT🔥')}`))
+                                    prettyConsole(chalk.green(`Update Balance\t:${balanceAfter} ${chalk.yellow('$HOT🔥')}`))
                                     makeSure = true
                                     claimed = true
                                 }
