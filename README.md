@@ -4,10 +4,10 @@
 
 # Feature : 
  <!-- - Show Near Balance -->
- - Show Gas Free
  - Show Hot Balance
- - Upgrade Level Speed Max Level 4
- - Upgrade Level Storage Max Level 4
+ - Show Near Balance
+ - Auto Upgrade Speed
+ - Auto Upgrade Storage
  - Schedule Check Storage Every Random Minute On Clock
  - Check Current Ip And Connected Ip (If Use Vpn)
  - Check Gas Free For Claim
