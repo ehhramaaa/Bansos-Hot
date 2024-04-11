@@ -101,216 +101,216 @@ async function checkElement(element, x, message) {
     }
 }
 
-// const upgradeSpeed = async (iframe, balance, x) => {
-//     let level
-//     let price
-//     let isContinue
-//     // Check Price Upgrade Speed
-//     const priceUpgrade = async (x) => {
-//         await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
-//         price = await iframe.evaluate(() => {
-//             const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
-//             return parseFloat(element.textContent)
-//         })
-//     }
+const upgradeSpeed = async (iframe, balance, x) => {
+    let level
+    let price
+    let isContinue
+    // Check Price Upgrade Speed
+    const priceUpgrade = async (x) => {
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+        price = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:first-of-type');
+            return parseFloat(element.textContent)
+        })
+    }
 
-//     isContinue = await checkElement(priceUpgrade, x, 'Check Price Upgrade Speed')
+    isContinue = await checkElement(priceUpgrade, x, 'Check Price Upgrade Speed')
 
-//     if (!isContinue) {
-//         return false
-//     }
+    if (!isContinue) {
+        return false
+    }
 
-//     prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
+    prettyConsole(chalk.green(`Price Upgrade Speed :${price} ${chalk.yellow('$HOT🔥')}`))
 
-//     // Check Level Speed
-//     const levelSpeed = async (x) => {
-//         await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-//         level = await iframe.evaluate(() => {
-//             const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
-//             return element.textContent
-//         })
-//     }
+    // Check Level Speed
+    const levelSpeed = async (x) => {
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+        level = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div > div > p:nth-child(3)');
+            return element.textContent
+        })
+    }
 
-//     isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
+    isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
 
-//     if (!isContinue) {
-//         return false
-//     }
+    if (!isContinue) {
+        return false
+    }
 
-//     if (balance >= (price * 2)) {
+    if (balance >= (price * 2)) {
 
-//         // Click For Upgrade
-//         const upgradeClick = async (x) => {
-//             await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)');
-//             await iframe.evaluate(() => {
-//                 document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)').click();
-//             })
-//         }
+        // Click For Upgrade
+        const upgradeClick = async (x) => {
+            await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)');
+            await iframe.evaluate(() => {
+                document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1)').click();
+            })
+        }
 
-//         isContinue = await checkElement(upgradeClick, x, 'Click For Upgrade')
+        isContinue = await checkElement(upgradeClick, x, 'Click For Upgrade')
 
-//         if (!isContinue) {
-//             return false
-//         }
+        if (!isContinue) {
+            return false
+        }
 
-//         await sleep(3000)
+        await sleep(3000)
 
-//         // Confirm Upgrade
-//         const confirmUpgrade = async (x) => {
-//             await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-//             await sleep(3000)
-//             await iframe.evaluate(() => {
-//                 document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-//             })
-//         }
+        // Confirm Upgrade
+        const confirmUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+            await sleep(3000)
+            await iframe.evaluate(() => {
+                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+            })
+        }
 
-//         isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
+        isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
 
-//         if (!isContinue) {
-//             return false
-//         }
+        if (!isContinue) {
+            return false
+        }
 
-//         // Make Sure Upgraded
-//         const makeSureUpgrade = async (x) => {
-//             await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-//         }
+        // Make Sure Upgraded
+        const makeSureUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+        }
 
-//         const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
+        const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgrade')
 
-//         if (upgraded) {
-//             // Click Got it
-//             const gotIt = async (x) => {
-//                 await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-//                 await sleep(3000)
-//                 await iframe.evaluate(() => {
-//                     document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-//                 })
-//             }
+        if (upgraded) {
+            // Click Got it
+            const gotIt = async (x) => {
+                await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+                await sleep(3000)
+                await iframe.evaluate(() => {
+                    document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+                })
+            }
 
-//             isContinue = await checkElement(gotIt, x, 'Click Got it')
+            isContinue = await checkElement(gotIt, x, 'Click Got it')
 
-//             if (!isContinue) {
-//                 return false
-//             }
+            if (!isContinue) {
+                return false
+            }
 
-//             await sleep(3000)
+            await sleep(3000)
 
-//             // Check Level Speed
-//             isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
+            // Check Level Speed
+            isContinue = await checkElement(levelSpeed, x, 'Check Level Speed')
 
-//             if (!isContinue) {
-//                 return false
-//             }
+            if (!isContinue) {
+                return false
+            }
 
-//             prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
+            prettyConsole(chalk.green(`Upgrade Level Speed Successfully, Current Level Speed :${level}`))
 
-//             balance = balance - price
-//         } else {
-//             prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
-//         }
-//     } else {
-//         prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Speed`))
-//     }
-// }
+            balance = balance - price
+        } else {
+            prettyConsole(chalk.red(`Upgrade Level Speed Failed!`))
+        }
+    } else {
+        prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Speed`))
+    }
+}
 
-// const upgradeStorage = async (iframe, balance, x) => {
-//     let level
-//     let price
-//     let isContinue
+const upgradeStorage = async (iframe, balance, x) => {
+    let level
+    let price
+    let isContinue
 
-//     // Check Price Upgrade Storage
-//     const checkPrice = async (x) => {
-//         await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
-//         price = await iframe.evaluate(() => {
-//             const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
-//             return parseFloat(element.textContent)
-//         })
-//     }
+    // Check Price Upgrade Storage
+    const checkPrice = async (x) => {
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
+        price = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:first-of-type');
+            return parseFloat(element.textContent)
+        })
+    }
 
-//     isContinue = await checkElement(checkPrice, x, 'Check Price Upgrade Storage')
+    isContinue = await checkElement(checkPrice, x, 'Check Price Upgrade Storage')
 
-//     if (!isContinue) {
-//         return false
-//     }
+    if (!isContinue) {
+        return false
+    }
 
-//     prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
+    prettyConsole(chalk.green(`Price Upgrade Storage :${price} ${chalk.yellow('$HOT🔥')}`))
 
-//     // Check Level Storage
-//     const checkLevel = async (x) => {
-//         await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-//         level = await iframe.evaluate(() => {
-//             const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
-//             return element.textContent
-//         })
-//     }
+    // Check Level Storage
+    const checkLevel = async (x) => {
+        await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+        level = await iframe.evaluate(() => {
+            const element = document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div > div > div > p:nth-child(3)');
+            return element.textContent
+        })
+    }
 
-//     isContinue = await checkElement(checkLevel, x, 'Check Level Storage')
+    isContinue = await checkElement(checkLevel, x, 'Check Level Storage')
 
-//     if (!isContinue) {
-//         return false
-//     }
+    if (!isContinue) {
+        return false
+    }
 
-//     if (balance >= (price * 2)) {
-//         // Click For Upgrade
-//         const clickUpgrade = async (x) => {
-//             await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div');
-//             account = await iframe.evaluate(() => {
-//                 document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div').click();
-//             })
-//         }
+    if (balance >= (price * 2)) {
+        // Click For Upgrade
+        const clickUpgrade = async (x) => {
+            await iframe.waitForSelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div');
+            account = await iframe.evaluate(() => {
+                document.querySelector('#root > div > div > div:nth-child(4) > div > div:nth-child(2) > div').click();
+            })
+        }
 
-//         isContinue = await checkElement(clickUpgrade, x, 'Click For Upgrade')
+        isContinue = await checkElement(clickUpgrade, x, 'Click For Upgrade')
 
-//         if (!isContinue) {
-//             return false
-//         }
+        if (!isContinue) {
+            return false
+        }
 
-//         await sleep(3000)
+        await sleep(3000)
 
-//         // Confirm Upgrade
-//         const confirmUpgrade = async (x) => {
-//             await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
-//             await sleep(3000)
-//             await iframe.evaluate(() => {
-//                 document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
-//             })
-//         }
+        // Confirm Upgrade
+        const confirmUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button');
+            await sleep(3000)
+            await iframe.evaluate(() => {
+                document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > button').click();
+            })
+        }
 
-//         isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
+        isContinue = await checkElement(confirmUpgrade, x, 'Confirm Upgrade')
 
-//         if (!isContinue) {
-//             return false
-//         }
+        if (!isContinue) {
+            return false
+        }
 
-//         // Make Sure Upgraded
-//         const makeSureUpgrade = async (x) => {
-//             await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-//             await iframe.evaluate(() => {
-//                 const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
-//                 return element.textContent
-//             })
-//         }
+        // Make Sure Upgraded
+        const makeSureUpgrade = async (x) => {
+            await iframe.waitForSelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+            await iframe.evaluate(() => {
+                const element = document.querySelector('body > div:nth-child(9) > div > div.react-modal-sheet-content > div > img');
+                return element.textContent
+            })
+        }
 
-//         const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
+        const upgraded = await checkElement(makeSureUpgrade, x, 'Make Sure Upgraded')
 
-//         await sleep(3000)
+        await sleep(3000)
 
-//         if (upgraded) {
-//             // Check Level Storage
-//             const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
+        if (upgraded) {
+            // Check Level Storage
+            const isContinue = await checkElement(checkLevel, x, 'Make Sure Upgraded')
 
-//             if (!isContinue) {
-//                 return false
-//             }
+            if (!isContinue) {
+                return false
+            }
 
-//             prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
-//         } else {
-//             prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
-//         }
-//     } else {
-//         prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Storage`))
-//     }
-// }
+            prettyConsole(chalk.green(`Upgrade Level Storage Successfully, Current Level Storage :${level}`))
+        } else {
+            prettyConsole(chalk.red(`Upgrade Level Storage Failed!`))
+        }
+    } else {
+        prettyConsole(chalk.yellow(`Balance $HOT🔥 Must > Price*2 For Upgrade Storage`))
+    }
+}
 
 async function main() {
     console.log(chalk.cyan(`\n<==================================[${moment().format('HH:mm:ss DD-MM-YYYY')}]==================================>`))
@@ -814,9 +814,9 @@ async function main() {
                 continue mainLoop
             }
 
-            await upgradeSpeed(iframe, balance, x)
+            // await upgradeSpeed(iframe, balance, x)
 
-            await upgradeStorage(iframe, balance, x)
+            // await upgradeStorage(iframe, balance, x)
 
             await browser.close()
 
