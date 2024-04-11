@@ -542,9 +542,9 @@ async function main() {
 
             // Check Storage
             const checkStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div');
                 storage = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div');
                     const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
                     return Math.floor(parseFloat(height[0]))
                 });
@@ -565,9 +565,9 @@ async function main() {
 
             // Click Storage
             const clickStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2)');
                 await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
+                    document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2)').click();
                 });
             }
 
