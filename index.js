@@ -500,9 +500,9 @@ async function main() {
 
             // Get Near Balance
             const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
                     return element.textContent
                 })
             }
@@ -515,9 +515,9 @@ async function main() {
 
             // Check Balance
             const checkBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > div > p');
                 balance = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > div > p');
                     return parseFloat(element.textContent)
                 });
             }
