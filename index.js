@@ -496,20 +496,20 @@ async function main() {
 
             prettyConsole(chalk.green(`Account\t:${account}`))
 
-            let near
+            // let near
 
-            // Get Near Balance
-            const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-                near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-                    return element.textContent
-                })
-            }
+            // // Get Near Balance
+            // const nearBalance = async (x) => {
+            //     await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+            //     near = await iframe.evaluate(() => {
+            //         const element = document.querySelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+            //         return element.textContent
+            //     })
+            // }
 
-            await checkElement(nearBalance, x, 'Get Near Balance')
+            // await checkElement(nearBalance, x, 'Get Near Balance')
 
-            prettyConsole(chalk.green(`Near Balance\t:${near}`))
+            // prettyConsole(chalk.green(`Near Balance\t:${near}`))
 
             let balance
 
@@ -697,12 +697,8 @@ async function main() {
                         isContinue = await checkElement(clickClaim, x, 'Click Claim')
 
                         if (!isContinue) {
-                            await browser.close()
-                            exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                            const rest = (Math.random() * (30 - 15) + 15) * 1000
-                            prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                            await sleep(rest)
-                            continue mainLoop
+                            reClaim++
+                            continue
                         }
 
                         prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT🔥')}`))
