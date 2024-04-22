@@ -319,6 +319,9 @@ async function main() {
     const ovpnConfig = await ovpnReadConfig(folderPath)
 
     mainLoop: for (let x = 0; x <= 21; x++) {
+        
+        exec('taskkill /F /IM chrome.exe');
+
         exec(`${ovpnPath} --command disconnect_all`);
 
         await sleep(7000)
@@ -500,9 +503,9 @@ async function main() {
 
             // Get Near Balance
             const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p:nth-child(2)');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p:nth-child(2)');
                     return element.textContent
                 })
             }
@@ -694,7 +697,7 @@ async function main() {
                             }, claimSelector);
                         }
 
-                        isContinue = await checkElement(clickClaim, x, 'Click Claim')
+                        await checkElement(clickClaim, x, 'Click Claim')
 
                         // TODO
 
