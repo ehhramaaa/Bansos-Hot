@@ -500,9 +500,9 @@ async function main() {
 
             // Get Near Balance
             const nearBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p');
                 near = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(3) > p');
                     return element.textContent
                 })
             }
