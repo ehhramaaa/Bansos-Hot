@@ -496,28 +496,28 @@ async function main() {
 
             prettyConsole(chalk.green(`Account\t:${account}`))
 
-            // let near
+            let near
 
-            // // Get Near Balance
-            // const nearBalance = async (x) => {
-            //     await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-            //     near = await iframe.evaluate(() => {
-            //         const element = document.querySelector('#root > div > div > div > div > div:nth-child(7) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
-            //         return element.textContent
-            //     })
-            // }
+            // Get Near Balance
+            const nearBalance = async (x) => {
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                near = await iframe.evaluate(() => {
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(2) > div > div:nth-child(2) > p:nth-child(2)');
+                    return element.textContent
+                })
+            }
 
-            // await checkElement(nearBalance, x, 'Get Near Balance')
+            await checkElement(nearBalance, x, 'Get Near Balance')
 
-            // prettyConsole(chalk.green(`Near Balance\t:${near}`))
+            prettyConsole(chalk.green(`Near Balance\t:${near}`))
 
             let balance
 
             // Check Balance
             const checkBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > div > p');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(1) > div > p:nth-child(2)');
                 balance = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > div > p');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(1) > div > p:nth-child(2)');
                     return parseFloat(element.textContent)
                 });
             }
@@ -542,9 +542,9 @@ async function main() {
 
             // Check Storage
             const checkStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                 storage = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div:nth-child(1) > div');
                     const height = window.getComputedStyle(element).getPropertyValue("height").match(/\d+(\.\d+)?/);
                     return Math.floor(parseFloat(height[0]))
                 });
@@ -565,9 +565,9 @@ async function main() {
 
             // Click Storage
             const clickStorage = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)');
                 await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div > div > div > div:nth-child(5) > div:nth-child(2)').click();
+                    document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(2)').click();
                 });
             }
 
@@ -696,10 +696,7 @@ async function main() {
 
                         isContinue = await checkElement(clickClaim, x, 'Click Claim')
 
-                        if (!isContinue) {
-                            reClaim++
-                            continue
-                        }
+                        // TODO
 
                         prettyConsole(chalk.green(`Claiming ${chalk.yellow('$HOT🔥')}`))
 
@@ -795,24 +792,24 @@ async function main() {
                 prettyConsole(chalk.yellow(`You Can Claim $HOT🔥 If Storage >= ${threshold}% `))
             }
 
-            // Click Boost
-            const clickBoost = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
-                account = await iframe.evaluate(() => {
-                    document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
-                })
-            }
+            // // Click Boost
+            // const clickBoost = async (x) => {
+            //     await iframe.waitForSelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)');
+            //     account = await iframe.evaluate(() => {
+            //         document.querySelector('#root > div > div > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(3)').click();
+            //     })
+            // }
 
-            isContinue = await checkElement(clickBoost, x, 'Click Boost')
+            // isContinue = await checkElement(clickBoost, x, 'Click Boost')
 
-            if (!isContinue) {
-                await browser.close()
-                exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
-                const rest = (Math.random() * (30 - 15) + 15) * 1000
-                prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
-                await sleep(rest)
-                continue mainLoop
-            }
+            // if (!isContinue) {
+            //     await browser.close()
+            //     exec(`${ovpnPath} --command disconnect ${ovpnConfig[x]}`);
+            //     const rest = (Math.random() * (30 - 15) + 15) * 1000
+            //     prettyConsole(chalk.green(`VPN Disconnect, Take rest for ${Math.floor(rest / 1000)} second\n`))
+            //     await sleep(rest)
+            //     continue mainLoop
+            // }
 
             // await upgradeSpeed(iframe, balance, x)
 
