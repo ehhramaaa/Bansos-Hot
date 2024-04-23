@@ -518,9 +518,9 @@ async function main() {
 
             // Check Balance
             const checkBalance = async (x) => {
-                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(1) > div > p:nth-child(2)');
+                await iframe.waitForSelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
                 balance = await iframe.evaluate(() => {
-                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(6) > div:nth-child(1) > div > p:nth-child(2)');
+                    const element = document.querySelector('#root > div > div > div > div > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > div > p');
                     return parseFloat(element.textContent)
                 });
             }
