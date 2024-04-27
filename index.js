@@ -320,7 +320,8 @@ async function main() {
 
     mainLoop: for (let x = 0; x <= 21; x++) {
         
-        exec('taskkill /F /IM chrome.exe');
+        exec('taskkill /F /IM openvpn-gui.exe');
+        exec('taskkill /F /IM openvpn.exe');
 
         exec(`${ovpnPath} --command disconnect_all`);
 
