@@ -322,6 +322,7 @@ async function main() {
         
         exec('taskkill /F /IM openvpn-gui.exe');
         exec('taskkill /F /IM openvpn.exe');
+        exec('taskkill /F /IM chrome.exe');
 
         exec(`${ovpnPath} --command disconnect_all`);
 
